@@ -102,6 +102,7 @@ This module has been built on and tested against Puppet 3.0 and higher.
 The module has been tested on:
 
 * RedHat Enterprise Linux 6/7
+* Fedora 18/19/20
 * Ubuntu 10.04/12.04/14.04
 * Debian 6/7
 

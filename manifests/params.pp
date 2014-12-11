@@ -7,7 +7,10 @@ class zfs::params {
       $package_ensure         = 'installed'
       $package_name           = 'zfs'
       $release_package_name   = 'zfs-release'
-      $release_package_source = "http://archive.zfsonlinux.org/epel/zfs-release.el${::operatingsystemmajrelease}.noarch.rpm"
+      $release_package_source = $::operatingsystem ? {
+        'Fedora' => "http://archive.zfsonlinux.org/fedora/zfs-release.fc${::operatingsystemmajrelease}.noarch.rpm",
+        default  => "http://archive.zfsonlinux.org/epel/zfs-release.el${::operatingsystemmajrelease}.noarch.rpm",
+      }
       $service_enable         = true
       $service_ensure         = 'running'
       $service_manage         = true

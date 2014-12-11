@@ -48,6 +48,41 @@ describe 'zfs' do
     end
   end
 
+  context 'on Fedora' do
+    let(:facts) do
+      {
+        :osfamily        => 'RedHat',
+        :operatingsystem => 'Fedora'
+      }
+    end
+
+    [18, 19, 20].each do |version|
+      context "version #{version}", :compile do
+        let(:facts) do
+          super().merge(
+            {
+              :operatingsystemmajrelease => version
+            }
+          )
+        end
+
+        it do
+          should contain_class('zfs')
+          should_not contain_class('epel')
+          should contain_package('zfs-release').with(
+            'source' => "http://archive.zfsonlinux.org/fedora/zfs-release.fc#{version}.noarch.rpm"
+          )
+          should contain_package('kernel-devel')
+          should contain_package('zfs')
+          should contain_service('zfs').with(
+            'ensure' => 'running',
+            'enable' => true
+          )
+        end
+      end
+    end
+  end
+
   context 'on Ubuntu' do
     let(:facts) do
       {

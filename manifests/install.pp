@@ -3,8 +3,6 @@ class zfs::install {
 
   case $::osfamily {
     'RedHat': {
-      include ::epel
-
       package { $::zfs::release_package_name:
         ensure   => installed,
         provider => rpm,
@@ -18,8 +16,13 @@ class zfs::install {
         require => [
           Package[$::zfs::release_package_name],
           Package[$::zfs::package_dependencies],
-          Class['::epel'],
         ],
+      }
+
+      if $::operatingsystem != 'Fedora' {
+        include ::epel
+
+        Class['::epel'] -> Package[$::zfs::package_name]
       }
     }
     'Debian': {
@@ -34,9 +37,7 @@ class zfs::install {
           }
 
           package { $::zfs::package_name:
-            require => [
-              Apt::Ppa['ppa:zfs-native/stable'],
-            ]
+            require => Apt::Ppa['ppa:zfs-native/stable'],
           }
         }
         default: {
