@@ -1,0 +1,3 @@
+fixtures:
+  symlinks:
+    zfs: "#{source_dir}"

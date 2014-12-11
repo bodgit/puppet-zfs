@@ -1,0 +1,78 @@
+{
+  "name": "bodgit-zfs",
+  "version": "1.0.0",
+  "author": "bodgit",
+  "summary": "Puppet Module for managing ZFS",
+  "license": "Apache-2.0",
+  "source": "https://github.com/bodgit/puppet-zfs",
+  "project_page": "https://github.com/bodgit/puppet-zfs",
+  "issues_url": "https://github.com/bodgit/puppet-zfs/issues",
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "10.04",
+        "12.04",
+        "14.04"
+      ]
+    },
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": "3.x"
+    }
+  ],
+  "tags": [
+    "zfs"
+  ],
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">=4.2.0 <5.0.0"
+    },
+    {
+      "name": "stahnma/epel",
+      "version_requirement": ">=1.0.0 <2.0.0"
+    },
+    {
+      "name": "puppetlabs/apt",
+      "version_requirement": ">=1.4.2 <2.0.0"
+    }
+  ]
+}
