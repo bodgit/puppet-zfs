@@ -103,7 +103,7 @@ The module has been tested on:
 
 * RedHat Enterprise Linux 6/7
 * Fedora 18/19/20
-* Ubuntu 10.04/12.04/14.04
+* Ubuntu 12.04/14.04
 * Debian 6/7
 
 Testing on other platforms has been light and cannot be guaranteed.

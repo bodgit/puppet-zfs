@@ -92,7 +92,7 @@ describe 'zfs' do
       }
     end
 
-    ['lucid', 'precise', 'trusty'].each do |codename|
+    ['precise', 'trusty'].each do |codename|
       context "#{codename}", :compile do
         let(:facts) do
           super().merge(
