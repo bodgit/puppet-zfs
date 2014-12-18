@@ -6,3 +6,5 @@ HOSTS:
     box: puppetlabs/debian-6.0.9-64-nocm
     box_url: https://vagrantcloud.com/puppetlabs/boxes/debian-6.0.9-64-nocm
     hypervisor: vagrant
+CONFIG:
+  type: foss

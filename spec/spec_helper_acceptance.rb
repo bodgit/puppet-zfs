@@ -11,10 +11,8 @@ RSpec.configure do |c|
   c.formatter = :documentation
 
   c.before :suite do
-    puppet_module_install(:source => proj_root, :module_name => 'zfs')
-
     hosts.each do |host|
-      copy_module_to(host, :source => proj_root, :module_name => 'zfs')
+      puppet_module_install(:source => proj_root, :module_name => 'zfs')
       if fact('osfamily') == 'RedHat'
         on host, puppet('module','install','stahnma/epel'), { :acceptable_exit_codes => [0,1] }
       end
