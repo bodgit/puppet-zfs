@@ -102,9 +102,13 @@ This module has been built on and tested against Puppet 3.0 and higher.
 The module has been tested on:
 
 * RedHat Enterprise Linux 6/7
-* Fedora 18/19/20
 * Ubuntu 12.04/14.04
-* Debian 6/7
+* Debian 7
+
+It should also work on:
+
+* Fedora 19/20 (need vagrant boxes for tests)
+* Debian 6 (requires an updated DKMS package)
 
 Testing on other platforms has been light and cannot be guaranteed.
 
