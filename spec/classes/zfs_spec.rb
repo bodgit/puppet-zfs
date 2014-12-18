@@ -124,10 +124,7 @@ describe 'zfs' do
           should contain_apt__ppa('ppa:zfs-native/stable')
           should contain_package('python-software-properties')
           should contain_package('ubuntu-zfs')
-          should contain_service('zfs').with(
-            'ensure' => 'running',
-            'enable' => true
-          )
+          should_not contain_service('zfs')
         end
       end
     end
@@ -137,7 +134,8 @@ describe 'zfs' do
     let(:facts) do
       {
         :osfamily        => 'Debian',
-        :operatingsystem => 'Debian'
+        :operatingsystem => 'Debian',
+        :lsbdistid       => 'Debian'
       }
     end
 
@@ -153,14 +151,14 @@ describe 'zfs' do
 
         it do
           should contain_class('zfs')
-          should contain_package('zfsonlinux').with(
-            'source' => "http://archive.zfsonlinux.org/debian/pool/main/z/zfsonlinux/zfsonlinux_3~#{codename}_all.deb"
-          )
+          should contain_class('apt')
+          should contain_apt__source('zfsonlinux')
+          should contain_apt__pin('zfsonlinux')
+          #should contain_package('zfsonlinux').with(
+          #  'source' => "http://archive.zfsonlinux.org/debian/pool/main/z/zfsonlinux/zfsonlinux_3~#{codename}_all.deb"
+          #)
           should contain_package('debian-zfs')
-          should contain_service('zfs').with(
-            'ensure' => 'running',
-            'enable' => true
-          )
+          should_not contain_service('zfs')
         end
       end
     end

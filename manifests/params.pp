@@ -32,7 +32,7 @@ class zfs::params {
       $release_package_source = "http://archive.zfsonlinux.org/debian/pool/main/z/zfsonlinux/zfsonlinux_3~${::lsbdistcodename}_all.deb"
       $service_enable         = true
       $service_ensure         = 'running'
-      $service_manage         = true
+      $service_manage         = false
       $service_name           = 'zfs'
     }
     default: {
