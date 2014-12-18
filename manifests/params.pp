@@ -13,7 +13,14 @@ class zfs::params {
       }
       $service_enable         = true
       $service_ensure         = 'running'
-      $service_manage         = true
+      # Fedora and RHEL/CentOS 7+ have a systemd target rather than a service
+      $service_manage         = $::operatingsystem ? {
+        'Fedora' => false,
+        default  => $::operatingsystemmajrelease ? {
+          6       => true,
+          default => false,
+        },
+      }
       $service_name           = 'zfs'
     }
     'Debian': {

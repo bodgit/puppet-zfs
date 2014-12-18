@@ -21,29 +21,48 @@ describe 'zfs' do
       }
     end
 
-    [6, 7].each do |version|
-      context "version #{version}", :compile do
-        let(:facts) do
-          super().merge(
-            {
-              :operatingsystemmajrelease => version
-            }
-          )
-        end
+    context 'version 6', :compile do
+      let(:facts) do
+        super().merge(
+          {
+            :operatingsystemmajrelease => 6
+          }
+        )
+      end
 
-        it do
-          should contain_class('zfs')
-          should contain_class('epel')
-          should contain_package('zfs-release').with(
-            'source' => "http://archive.zfsonlinux.org/epel/zfs-release.el#{version}.noarch.rpm"
-          )
-          should contain_package('kernel-devel')
-          should contain_package('zfs')
-          should contain_service('zfs').with(
-            'ensure' => 'running',
-            'enable' => true
-          )
-        end
+      it do
+        should contain_class('zfs')
+        should contain_class('epel')
+        should contain_package('zfs-release').with(
+          'source' => "http://archive.zfsonlinux.org/epel/zfs-release.el6.noarch.rpm"
+        )
+        should contain_package('kernel-devel')
+        should contain_package('zfs')
+        should contain_service('zfs').with(
+          'ensure' => 'running',
+          'enable' => true
+        )
+      end
+    end
+
+    context 'version 7', :compile do
+      let(:facts) do
+        super().merge(
+          {
+            :operatingsystemmajrelease => 7
+          }
+        )
+      end
+
+      it do
+        should contain_class('zfs')
+        should contain_class('epel')
+        should contain_package('zfs-release').with(
+          'source' => "http://archive.zfsonlinux.org/epel/zfs-release.el7.noarch.rpm"
+        )
+        should contain_package('kernel-devel')
+        should contain_package('zfs')
+        should_not contain_service('zfs')
       end
     end
   end
@@ -74,10 +93,7 @@ describe 'zfs' do
           )
           should contain_package('kernel-devel')
           should contain_package('zfs')
-          should contain_service('zfs').with(
-            'ensure' => 'running',
-            'enable' => true
-          )
+          should_not contain_service('zfs')
         end
       end
     end
