@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Puppet Class: zfs::zed
+  
+    &mdash; Documentation by YARD 0.9.5
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_classes::zfs::zed";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_class_list.html"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (z)</a> &raquo;
+    <span class='title'><span class='object_link'>Puppet Classes</span></span>
+     &raquo; 
+    <span class="title">zfs::zed</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <iframe id="search_frame" src="../puppet_class_list.html"></iframe>
+
+      <div id="content"><h1>Puppet Class: zfs::zed</h1>
+<div class="box_info">
+  
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>::zfs::params</dd>
+  </dl>
+  
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/zed.pp
+    </dd>
+  </dl>
+</div>
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    
+<p>Installs the ZFS Event Daemon.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+        <p class="example_title"><div class='inline'>
+<p>Declaring the class</p>
+</div></p>
+      
+      <pre class="example code"><code>include ::zfs
+include ::zfs::zed</code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>conf_dir</span>
+      
+      
+        <span class='type'>(<tt>Stdlib::Absolutepath</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::zfs::params::zed_conf_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Configuration directory, usually <code>${::zfs::conf_dir}/zed.d</code>.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>debug_log</span>
+      
+      
+        <span class='type'>(<tt>Optional[Stdlib::Absolutepath]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>email_addrs</span>
+      
+      
+        <span class='type'>(<tt>Optional[Array[String, 1]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>email_opts</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>email_prog</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>lock_dir</span>
+      
+      
+        <span class='type'>(<tt>Optional[Stdlib::Absolutepath]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>notify_interval_secs</span>
+      
+      
+        <span class='type'>(<tt>Optional[Integer[0]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>notify_verbose</span>
+      
+      
+        <span class='type'>(<tt>Optional[Boolean]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>package_name</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::zfs::params::zed_package_name</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>The name of the package to install if not installed already by the ZFS
+class.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>pushbullet_access_token</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>pushbullet_channel_tag</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>run_dir</span>
+      
+      
+        <span class='type'>(<tt>Optional[Stdlib::Absolutepath]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>service_manage</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::zfs::params::service_manage</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Whether to manage the service.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>service_name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::zfs::params::zed_service_name</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Name of the service.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>spare_on_checksum_errors</span>
+      
+      
+        <span class='type'>(<tt>Optional[Integer[1]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>spare_on_io_errors</span>
+      
+      
+        <span class='type'>(<tt>Optional[Integer[1]]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>syslog_priority</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>syslog_tag</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>zedlet_dir</span>
+      
+      
+        <span class='type'>(<tt>Stdlib::Absolutepath</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::zfs::params::zedlet_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Path to package-provided zedlets.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>zedlets</span>
+      
+      
+        <span class='type'>(<tt>Hash[String, Hash]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::zfs::params::zedlets</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Hash of zedlet resources to create.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="zfs.html" title="puppet_classes::zfs (puppet_class)">::zfs</a></span></li>
+    
+      <li><span class='object_link'><a href="../puppet_defined_types/zfs_3A_3Azed_3A_3Azedlet.html" title="puppet_defined_types::zfs::zed::zedlet (puppet_defined_type)">::zfs::zed::zedlet</a></span></li>
+    
+  </ul>
+<p class="tag_title">Since:</p>
+<ul class="since">
+  
+    <li>
+      
+      
+      
+      
+        
+        <div class='inline'>
+<p>2.0.0</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/zed.pp', line 33</span>
+
+class zfs::zed (
+  Stdlib::Absolutepath           $conf_dir                 = $::zfs::params::zed_conf_dir,
+  Optional[Stdlib::Absolutepath] $debug_log                = undef,
+  Optional[Array[String, 1]]     $email_addrs              = undef,
+  Optional[String]               $email_opts               = undef,
+  Optional[String]               $email_prog               = undef,
+  Optional[Stdlib::Absolutepath] $lock_dir                 = undef,
+  Optional[Integer[0]]           $notify_interval_secs     = undef,
+  Optional[Boolean]              $notify_verbose           = undef,
+  Optional[String]               $package_name             = $::zfs::params::zed_package_name,
+  Optional[String]               $pushbullet_access_token  = undef,
+  Optional[String]               $pushbullet_channel_tag   = undef,
+  Optional[Stdlib::Absolutepath] $run_dir                  = undef,
+  Boolean                        $service_manage           = $::zfs::params::service_manage,
+  String                         $service_name             = $::zfs::params::zed_service_name,
+  Optional[Integer[1]]           $spare_on_checksum_errors = undef,
+  Optional[Integer[1]]           $spare_on_io_errors       = undef,
+  Optional[String]               $syslog_priority          = undef,
+  Optional[String]               $syslog_tag               = undef,
+  Stdlib::Absolutepath           $zedlet_dir               = $::zfs::params::zedlet_dir,
+  Hash[String, Hash]             $zedlets                  = $::zfs::params::zedlets,
+) inherits ::zfs::params {
+
+  if ! defined(Class[&#39;::zfs&#39;]) {
+    fail(&#39;You must include the zfs base class before using the zfs::zed class&#39;)
+  }
+
+  include ::zfs::zed::install
+  include ::zfs::zed::config
+  include ::zfs::zed::service
+
+  Class[&#39;::zfs::service&#39;] -&gt; Class[&#39;::zfs::zed::install&#39;]
+    -&gt; Class[&#39;::zfs::zed::config&#39;] ~&gt; Class[&#39;::zfs::zed::service&#39;]
+    -&gt; Anchor[&#39;zfs::end&#39;]
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+  Generated on Thu Jan  5 21:18:49 2017 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.5 (ruby-2.2.5).
+</div>
+
+    </div>
+  </body>
+</html>

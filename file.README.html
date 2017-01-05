@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  File: README
+  
+    &mdash; Documentation by YARD 0.9.5
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="file_list.html"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: README</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <iframe id="search_frame" src="file_list.html"></iframe>
+
+      <div id="content"><div id='filecontents'>
+<h1 id="label-zfs">zfs</h1>
+
+<p>Tested with Travis CI</p>
+
+<p><a href="https://travis-ci.org/bodgit/puppet-zfs"><img
+src="https://travis-ci.org/bodgit/puppet-zfs.svg?branch=master"></a> <a
+href="https://coveralls.io/github/bodgit/puppet-zfs?branch=master"><img
+src="https://coveralls.io/repos/bodgit/puppet-zfs/badge.svg?branch=master&service=github"></a>
+<a href="https://forge.puppetlabs.com/bodgit/zfs"><img
+src="http://img.shields.io/puppetforge/v/bodgit/zfs.svg"></a> <a
+href="https://gemnasium.com/bodgit/puppet-zfs"><img
+src="https://gemnasium.com/bodgit/puppet-zfs.svg"></a></p>
+
+<h4 id="label-Table+of+Contents">Table of Contents</h4>
+<ol><li>
+<p><a href="#overview">Overview</a></p>
+</li><li>
+<p><a href="#module-description">Module Description - What the module does and
+why it is useful</a></p>
+</li><li>
+<p><a href="#setup">Setup - The basics of getting started with zfs</a></p>
+<ul><li>
+<p><a href="#what-zfs-affects">What zfs affects</a></p>
+</li><li>
+<p><a href="#beginning-with-zfs">Beginning with zfs</a></p>
+</li></ul>
+</li><li>
+<p><a href="#usage">Usage - Configuration options and additional
+functionality</a></p>
+</li><li>
+<p><a href="#reference">Reference - An under-the-hood peek at what the module
+is doing and how</a></p>
+</li><li>
+<p><a href="#limitations">Limitations - OS compatibility, etc.</a></p>
+</li><li>
+<p><a href="#development">Development - Guide for contributing to the
+module</a></p>
+</li></ol>
+
+<h2 id="label-Overview">Overview</h2>
+
+<p>This module manages ZFS.</p>
+
+<h2 id="label-Module+Description">Module Description</h2>
+
+<p>This module currently ensures that the ZFS packages available from <a
+href="http://zfsonlinux.org">zfsonlinux.org</a> are installed.</p>
+
+<h2 id="label-Setup">Setup</h2>
+
+<h3 id="label-What+zfs+affects">What zfs affects</h3>
+<ul><li>
+<p>The packages containing ZFS support.</p>
+</li><li>
+<p>The services controlling any ZFS-related daemons.</p>
+</li></ul>
+
+<h3 id="label-Beginning+with+zfs">Beginning with zfs</h3>
+
+<pre class="code ruby"><code class="ruby">include ::zfs</code></pre>
+
+<h2 id="label-Usage">Usage</h2>
+
+<p>If you want to use something else to manage the zfs daemons, you can do:</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;::zfs&#39;:
+  service_manage =&gt; false,
+}</code></pre>
+
+<h2 id="label-Reference">Reference</h2>
+
+<h3 id="label-Classes">Classes</h3>
+<ul><li>
+<p>zfs: Main class for installation and service management.</p>
+</li><li>
+<p>zfs::install: Handles package installation.</p>
+</li><li>
+<p>zfs::params: Different configuration data for different systems.</p>
+</li><li>
+<p>zfs::service: Handles the zfs service.</p>
+</li></ul>
+
+<h3 id="label-Parameters">Parameters</h3>
+
+<h4 id="label-package_dependencies"><code>package_dependencies</code></h4>
+
+<p>An array of additional packages that should be installed alongside/before
+<code>package_name</code>.</p>
+
+<h4 id="label-package_ensure"><code>package_ensure</code></h4>
+
+<p>Intended state of the package providing zfs.</p>
+
+<h4 id="label-package_name"><code>package_name</code></h4>
+
+<p>The package name that provides zfs.</p>
+
+<h4 id="label-release_package_name"><code>release_package_name</code></h4>
+
+<p>The name of the package containing required package repository definitions.</p>
+
+<h4 id="label-release_package_source"><code>release_package_source</code></h4>
+
+<p>The source URL for downloading <code>release_package_name</code>.</p>
+
+<h4 id="label-service_enable"><code>service_enable</code></h4>
+
+<p>Whether to enable the zfs service.</p>
+
+<h4 id="label-service_ensure"><code>service_ensure</code></h4>
+
+<p>Intended state of the zfs service.</p>
+
+<h4 id="label-service_manage"><code>service_manage</code></h4>
+
+<p>Whether to manage the zfs service or not.</p>
+
+<h4 id="label-service_name"><code>service_name</code></h4>
+
+<p>The name of the zfs service.</p>
+
+<h2 id="label-Limitations">Limitations</h2>
+
+<p>This module has been built on and tested against Puppet 4.4.0 and higher.</p>
+
+<p>The module has been tested on:</p>
+<ul><li>
+<p>RedHat Enterprise Linux 6/7</p>
+</li><li>
+<p>Ubuntu 16.04</p>
+</li><li>
+<p>Debian 8</p>
+</li></ul>
+
+<p>It should also work on Ubuntu 12.04/14.04 however the quality of some
+aspects of the packages make it difficult for the module to work properly.</p>
+
+<h2 id="label-Development">Development</h2>
+
+<p>Please log issues or pull requests at <a
+href="https://github.com/bodgit/puppet-zfs">github</a>.</p>
+</div></div>
+
+      <div id="footer">
+  Generated on Thu Jan  5 21:18:49 2017 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.5 (ruby-2.2.5).
+</div>
+
+    </div>
+  </body>
+</html>
