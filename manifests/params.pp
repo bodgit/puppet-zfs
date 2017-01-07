@@ -1,42 +1,58 @@
-#
+# @!visibility private
 class zfs::params {
+
+  $conf_dir         = '/etc/zfs'
+  $kmod_type        = 'dkms'
+  $service_manage   = true
+  $zed_conf_dir     = "${conf_dir}/zed.d"
+  $zedlets          = {
+    'all-syslog.sh'             => {},
+    'checksum-notify.sh'        => {},
+    'checksum-spare.sh'         => {},
+    'data-notify.sh'            => {},
+    'io-notify.sh'              => {},
+    'io-spare.sh'               => {},
+    'resilver.finish-notify.sh' => {},
+    'scrub.finish-notify.sh'    => {},
+  }
 
   case $::osfamily {
     'RedHat': {
-      $package_dependencies   = ['kernel-devel']
-      $package_ensure         = 'installed'
-      $package_name           = 'zfs'
-      $release_package_name   = 'zfs-release'
-      $release_package_source = $::operatingsystem ? {
-        'Fedora' => "http://archive.zfsonlinux.org/fedora/zfs-release.fc${::operatingsystemmajrelease}.noarch.rpm",
-        default  => "http://archive.zfsonlinux.org/epel/zfs-release.el${::operatingsystemmajrelease}.noarch.rpm",
-      }
-      $service_enable         = true
-      $service_ensure         = 'running'
-      # Fedora and RHEL/CentOS 7+ have a systemd target rather than a service
-      $service_manage         = $::operatingsystem ? {
-        'Fedora' => false,
-        default  => $::operatingsystemmajrelease ? {
-          6       => true,
-          default => false,
-        },
-      }
-      $service_name           = 'zfs'
+      $manage_repo      = true
+      $zed_package_name = undef
+      $zed_service_name = 'zfs-zed'
+      $zedlet_dir       = '/usr/libexec/zfs/zed.d'
+      $zfs_package_name = 'zfs'
     }
     'Debian': {
-      $operatingsystem_real   = downcase($::operatingsystem)
-      $package_dependencies   = []
-      $package_ensure         = 'installed'
-      $package_name           = "${operatingsystem_real}-zfs"
-      $release_package_name   = 'zfsonlinux'
-      $release_package_source = "http://archive.zfsonlinux.org/debian/pool/main/z/zfsonlinux/zfsonlinux_3~${::lsbdistcodename}_all.deb"
-      $service_enable         = true
-      $service_ensure         = 'running'
-      $service_manage         = false
-      $service_name           = 'zfs'
+      $zed_package_name = 'zfs-zed'
+
+      case $::operatingsystem {
+        'Ubuntu': {
+          $zed_service_name = 'zed'
+          $zedlet_dir       = '/usr/lib/zfs-linux/zfs/zed.d'
+
+          case $::operatingsystemrelease {
+            '12.04', '14.04': {
+              $manage_repo      = true
+              $zfs_package_name = 'ubuntu-zfs'
+            }
+            default: {
+              $manage_repo      = false
+              $zfs_package_name = 'zfsutils-linux'
+            }
+          }
+        }
+        default: {
+          $manage_repo      = true
+          $zed_service_name = 'zfs-zed'
+          $zedlet_dir       = '/usr/lib/x86_64-linux-gnu/zfs/zed.d'
+          $zfs_package_name = 'zfsutils-linux'
+        }
+      }
     }
     default: {
-      fail("The ${module_name} module is not supported on an ${::osfamily} based system.") # lint:ignore:80chars
+      fail("The ${module_name} module is not supported on an ${::osfamily} based system.")
     }
   }
 }

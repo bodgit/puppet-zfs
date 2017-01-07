@@ -2,37 +2,48 @@
 
 Tested with Travis CI
 
-[![Puppet Forge](http://img.shields.io/puppetforge/v/bodgit/zfs.svg)](https://forge.puppetlabs.com/bodgit/zfs)
 [![Build Status](https://travis-ci.org/bodgit/puppet-zfs.svg?branch=master)](https://travis-ci.org/bodgit/puppet-zfs)
+[![Coverage Status](https://coveralls.io/repos/bodgit/puppet-zfs/badge.svg?branch=master&service=github)](https://coveralls.io/github/bodgit/puppet-zfs?branch=master)
+[![Puppet Forge](http://img.shields.io/puppetforge/v/bodgit/zfs.svg)](https://forge.puppetlabs.com/bodgit/zfs)
+[![Dependency Status](https://gemnasium.com/bodgit/puppet-zfs.svg)](https://gemnasium.com/bodgit/puppet-zfs)
 
 #### Table of Contents
 
-1. [Overview](#overview)
-2. [Module Description - What the module does and why it is useful](#module-description)
-3. [Setup - The basics of getting started with zfs](#setup)
+1. [Description](#description)
+2. [Setup - The basics of getting started with zfs](#setup)
     * [What zfs affects](#what-zfs-affects)
+    * [Setup requirements](#setup-requirements)
     * [Beginning with zfs](#beginning-with-zfs)
-4. [Usage - Configuration options and additional functionality](#usage)
-5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
+3. [Usage - Configuration options and additional functionality](#usage)
+4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 5. [Limitations - OS compatibility, etc.](#limitations)
 6. [Development - Guide for contributing to the module](#development)
 
-## Overview
+## Description
 
-This module manages ZFS.
+This module currently ensures that the ZFS packages available from
+[zfsonlinux.org](http://zfsonlinux.org) are installed and configured.
 
-## Module Description
-
-This module currently ensures that the ZFS packages available from [zfsonlinux.org](http://zfsonlinux.org) are installed.
+RHEL/CentOS, Ubuntu and Debian are supported using Puppet 4.4.0 or later. On
+RHEL/CentOS platforms there is support for installing the kABI-tracking kernel
+modules as opposed to the default of DKMS-style kernel modules.
 
 ## Setup
 
 ### What zfs affects
 
-* The packages containing ZFS support.
-* The services controlling any ZFS-related daemons.
+This module will install kernel modules which utilises the DKMS framework to
+accomplish this. This means kernel headers, toolchains, etc. will be installed.
+
+### Setup Requirements
+
+You will need pluginsync enabled. On RHEL/CentOS platforms you will need to
+have access to the EPEL repository by using
+[stahnma/epel](https://forge.puppet.com/stahnma/epel) or by other means.
 
 ### Beginning with zfs
+
+In the very simplest case, you can just include the following:
 
 ```puppet
 include ::zfs
@@ -40,78 +51,56 @@ include ::zfs
 
 ## Usage
 
-If you want to use something else to manage the zfs daemons, you can do:
+For example on RHEL/CentOS to instead install the kABI-tracking kernel modules
+and tune the ARC, you can do:
 
 ```puppet
+include ::epel
+
 class { '::zfs':
-  service_manage => false,
+  kmod_type   => 'kabi',
+  zfs_arc_max => to_bytes('256 M'),
+  zfs_arc_min => to_bytes('128 M'),
+  require     => Class['::epel'],
 }
+```
+
+To also install the ZFS Event Daemon (zed):
+
+```puppet
+include ::zfs
+include ::zfs::zed
 ```
 
 ## Reference
 
-### Classes
-
-* zfs: Main class for installation and service management.
-* zfs::install: Handles package installation.
-* zfs::params: Different configuration data for different systems.
-* zfs::service: Handles the zfs service.
-
-### Parameters
-
-####`package_dependencies`
-
-An array of additional packages that should be installed alongside/before `package_name`.
-
-####`package_ensure`
-
-Intended state of the package providing zfs.
-
-####`package_name`
-
-The package name that provides zfs.
-
-####`release_package_name`
-
-The name of the package containing required package repository definitions.
-
-####`release_package_source`
-
-The source URL for downloading `release_package_name`.
-
-####`service_enable`
-
-Whether to enable the zfs service.
-
-####`service_ensure`
-
-Intended state of the zfs service.
-
-####`service_manage`
-
-Whether to manage the zfs service or not.
-
-####`service_name`
-
-The name of the zfs service.
+The reference documentation is now generated with
+[puppet-strings](https://github.com/puppetlabs/puppet-strings) and the latest
+version is hosted [here](http://bodgit.github.io/puppet-zfs/).
 
 ## Limitations
 
-This module has been built on and tested against Puppet 3.0 and higher.
+This module has been built on and tested against Puppet 4.4.0 and higher.
 
 The module has been tested on:
 
 * RedHat Enterprise Linux 6/7
-* Ubuntu 12.04/14.04
-* Debian 7
+* Ubuntu 16.04
+* Debian 8
 
-It should also work on:
+It should also work on Ubuntu 12.04/14.04 however the quality of some aspects
+of the packages make it difficult for the module to work properly.
 
-* Fedora 19/20 (need vagrant boxes for tests)
-* Debian 6 (requires an updated DKMS package)
+## Development
 
-Testing on other platforms has been light and cannot be guaranteed.
+The module has both [rspec-puppet](http://rspec-puppet.com) and
+[beaker-rspec](https://github.com/puppetlabs/beaker-rspec) tests. Run them
+with:
 
-## Authors
+```
+$ bundle exec rake test
+$ PUPPET_INSTALL_TYPE=agent PUPPET_INSTALL_VERSION=x.y.z bundle exec rake beaker:<nodeset>
+```
 
-* Matt Dainty <matt@bodgit-n-scarper.com>
+Please log issues or pull requests at
+[github](https://github.com/bodgit/puppet-zfs).

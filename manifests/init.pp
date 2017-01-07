@@ -1,32 +1,40 @@
+# Installs basic ZFS kernel and userland support.
 #
+# @example Declaring the class
+#   include ::zfs
+#
+# @example Tuning the ZFS ARC
+#   class { '::zfs':
+#     zfs_arc_max => to_bytes('256 M'),
+#     zfs_arc_min => to_bytes('128 M'),
+#   }
+#
+# @param conf_dir Top-level configuration directory, usually `/etc/zfs`.
+# @param kmod_type Whether to use DKMS kernel packages or ones built to match
+#   the running kernel (only applies to RHEL platforms).
+# @param manage_repo Whether to setup and manage external package repositories.
+# @param package_name The name of the top-level metapackage that installs ZFS
+#   support.
+# @param service_manage Whether to manage the various ZFS services.
+# @param zfs_arc_max Maximum size of the ARC in bytes.
+# @param zfs_arc_min Minimum size of the ARC in bytes.
 class zfs (
-  $package_dependencies   = $::zfs::params::package_dependencies,
-  $package_ensure         = $::zfs::params::package_ensure,
-  $package_name           = $::zfs::params::package_name,
-  $release_package_name   = $::zfs::params::release_package_name,
-  $release_package_source = $::zfs::params::release_package_source,
-  $service_enable         = $::zfs::params::service_enable,
-  $service_ensure         = $::zfs::params::service_ensure,
-  $service_manage         = $::zfs::params::service_manage,
-  $service_name           = $::zfs::params::service_name
+  Stdlib::Absolutepath $conf_dir       = $::zfs::params::conf_dir,
+  Enum['dkms', 'kabi'] $kmod_type      = $::zfs::params::kmod_type,
+  Boolean              $manage_repo    = $::zfs::params::manage_repo,
+  String               $package_name   = $::zfs::params::zfs_package_name,
+  Boolean              $service_manage = $::zfs::params::service_manage,
+  Optional[Integer[0]] $zfs_arc_max    = undef,
+  Optional[Integer[0]] $zfs_arc_min    = undef,
 ) inherits ::zfs::params {
 
-  validate_array($package_dependencies)
-  validate_re($package_ensure, '^(installed|absent)$')
-  validate_string($package_name)
-  validate_string($release_package_name)
-  validate_string($release_package_source)
-  validate_bool($service_enable)
-  validate_re($service_ensure, '^(running|stopped)$')
-  validate_bool($service_manage)
-  validate_string($service_name)
-
   include ::zfs::install
+  include ::zfs::config
   include ::zfs::service
 
   anchor { 'zfs::begin': }
   anchor { 'zfs::end': }
 
-  Anchor['zfs::begin'] -> Class['::zfs::install'] ~> Class['::zfs::service']
-    -> Anchor['zfs::end']
+  Anchor['zfs::begin'] -> Class['::zfs::install'] ~> Class['::zfs::config']
+    ~> Class['::zfs::service'] -> Anchor['zfs::end']
 }

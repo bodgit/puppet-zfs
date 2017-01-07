@@ -1,84 +1,133 @@
-#
+# @!visibility private
 class zfs::install {
 
+  if $::zfs::manage_repo {
+    case $::osfamily {
+      'RedHat': {
+
+        $_source = "http://download.zfsonlinux.org/epel/zfs-release.el${::operatingsystemmajrelease}.noarch.rpm"
+
+        package { 'zfs-release':
+          ensure   => present,
+          provider => rpm,
+          source   => $_source,
+        }
+
+        augeas { '/etc/yum.repos.d/zfs.repo/zfs/enabled':
+          context => '/files/etc/yum.repos.d/zfs.repo/zfs',
+          require => Package['zfs-release'],
+          before  => Package[$::zfs::package_name],
+        }
+
+        augeas { '/etc/yum.repos.d/zfs.repo/zfs-kmod/enabled':
+          context => '/files/etc/yum.repos.d/zfs.repo/zfs-kmod',
+          require => Package['zfs-release'],
+          before  => Package[$::zfs::package_name],
+        }
+
+        case $::zfs::kmod_type {
+          'dkms': {
+            Augeas['/etc/yum.repos.d/zfs.repo/zfs/enabled'] {
+              changes => [
+                'set enabled 1',
+              ],
+            }
+            Augeas['/etc/yum.repos.d/zfs.repo/zfs-kmod/enabled'] {
+              changes => [
+                'set enabled 0',
+              ],
+            }
+          }
+          'kabi': {
+            Augeas['/etc/yum.repos.d/zfs.repo/zfs/enabled'] {
+              changes => [
+                'set enabled 0',
+              ],
+            }
+            Augeas['/etc/yum.repos.d/zfs.repo/zfs-kmod/enabled'] {
+              changes => [
+                'set enabled 1',
+              ],
+            }
+          }
+          default: {
+            # noop
+          }
+        }
+      }
+      'Debian': {
+        case $::operatingsystem {
+          'Ubuntu': {
+            ensure_packages(['python-software-properties'])
+
+            ::apt::ppa { 'ppa:zfs-native/stable':
+              require => Package['python-software-properties'],
+              before  => Package[$::zfs::package_name],
+            }
+          }
+          default: {
+            # Not 100% sure this should be instantiated here (i.e. EPEL)
+            class { '::apt::backports':
+              before => Package[$::zfs::package_name],
+            }
+          }
+        }
+      }
+      default: {
+        # noop
+      }
+    }
+  }
+
+  # Handle these dependencies separately as they shouldn't be guarded by
+  # `$zfs::manage_repo`
   case $::osfamily {
     'RedHat': {
-      package { $::zfs::release_package_name:
-        ensure   => installed,
-        provider => rpm,
-        source   => $::zfs::release_package_source,
-      }
-
-      ensure_packages($::zfs::package_dependencies)
-
-      package { $::zfs::package_name:
-        ensure  => $::zfs::package_ensure,
-        require => [
-          Package[$::zfs::release_package_name],
-          Package[$::zfs::package_dependencies],
-        ],
-      }
-
-      if $::operatingsystem != 'Fedora' {
-        include ::epel
-
-        Class['::epel'] -> Package[$::zfs::package_name]
+      case $::zfs::kmod_type {
+        'dkms': {
+          ensure_packages(['kernel-devel'], {
+            before => Package[$::zfs::package_name],
+          })
+        }
+        default: {
+          # noop
+        }
       }
     }
     'Debian': {
-      include ::apt
-
       case $::operatingsystem {
         'Ubuntu': {
-
-          ensure_packages(['python-software-properties'])
-
-          apt::ppa { 'ppa:zfs-native/stable':
-            require => Package['python-software-properties'],
-          }
-
-          package { $::zfs::package_name:
-            require => Apt::Ppa['ppa:zfs-native/stable'],
-          }
+          # noop
         }
         default: {
-
-          # Dpkg can't install from a URL like RPM can so use the defined
-          # types to replicate what is contained within the release package.
-          # The alternative is some curl/wget hack to download the .deb which
-          # means it must always exist on the disk somewhere
-          #package { $::zfs::release_package_name:
-          #  ensure   => installed,
-          #  provider => dpkg,
-          #  source   => $::zfs::release_package_source,
-          #}
-
-          apt::source { 'zfsonlinux':
-            location    => 'http://archive.zfsonlinux.org/debian',
-            repos       => 'main',
-            key         => '4D5843EA',
-            include_src => false,
-          }
-
-          apt::pin { 'zfsonlinux':
-            originator => 'archive.zfsonlinux.org',
-            priority   => 1001,
-          }
-
-          ensure_packages($::zfs::package_dependencies)
-
-          package { $::zfs::package_name:
-            ensure  => $::zfs::package_ensure,
-            require => [
-              #Package[$::zfs::release_package_name],
-              Apt::Source['zfsonlinux'],
-              Apt::Pin['zfsonlinux'],
-              Package[$::zfs::package_dependencies],
-            ],
-          }
+          ensure_packages(["linux-headers-${::kernelrelease}"], {
+            before => Package[$::zfs::package_name],
+          })
         }
       }
     }
-    default: {}
+    default: {
+      # noop
+    }
+  }
+
+  # These need to be done here so the kernel settings are present before the
+  # package is installed and potentially loading the kernel module
+  $config = delete_undef_values({
+    'zfs_arc_max' => $::zfs::zfs_arc_max,
+    'zfs_arc_min' => $::zfs::zfs_arc_min,
+  })
+
+  $config.each |$option,$value| {
+    ::kmod::option { "zfs ${option}":
+      module => 'zfs',
+      option => $option,
+      value  => $value,
+      before => Package[$::zfs::package_name],
+    }
+  }
+
+  package { $::zfs::package_name:
+    ensure => present,
   }
 }

@@ -2,163 +2,115 @@ require 'spec_helper'
 
 describe 'zfs' do
 
+  let(:params) do
+    {
+      :zfs_arc_min => 0,
+      :zfs_arc_max => 1,
+    }
+  end
+
   context 'on unsupported distributions' do
     let(:facts) do
       {
-        :osfamily => 'Unsupported'
+        :osfamily             => 'Unsupported',
+        :zfs_startup_provider => 'init',
       }
     end
 
-    it do
-      expect { subject }.to raise_error(/not supported on an Unsupported/)
-    end
+    it { expect { should compile }.to raise_error(/not supported on an Unsupported/) }
   end
 
-  context 'on RedHat' do
-    let(:facts) do
-      {
-        :osfamily => 'RedHat'
-      }
-    end
-
-    context 'version 6', :compile do
+  on_supported_os.each do |os, facts|
+    context "on #{os}", :compile do
       let(:facts) do
-        super().merge(
-          {
-            :operatingsystemmajrelease => 6
-          }
-        )
+        facts.merge({
+          :zfs_startup_provider    => case facts[:osfamily]
+                                      when 'RedHat'
+                                        case facts[:operatingsystemmajrelease]
+                                        when '6'
+                                          'init'
+                                        else
+                                          'systemd'
+                                        end
+                                      when 'Debian'
+                                        case facts[:operatingsystem]
+                                        when 'Ubuntu'
+                                          case facts[:operatingsystemrelease]
+                                          when '12.04', '14.04'
+                                            'init'
+                                          else
+                                            'systemd'
+                                          end
+                                        else
+                                          'systemd'
+                                        end
+                                      end,
+          :zfs_zpool_cache_present => false,
+        })
       end
 
-      it do
-        should contain_class('zfs')
-        should contain_class('epel')
-        should contain_package('zfs-release').with(
-          'source' => "http://archive.zfsonlinux.org/epel/zfs-release.el6.noarch.rpm"
-        )
-        should contain_package('kernel-devel')
-        should contain_package('zfs')
-        should contain_service('zfs').with(
-          'ensure' => 'running',
-          'enable' => true
-        )
-      end
-    end
+      it { should contain_anchor('zfs::begin') }
+      it { should contain_anchor('zfs::end') }
+      it { should contain_class('zfs') }
+      it { should contain_class('zfs::config') }
+      it { should contain_class('zfs::install') }
+      it { should contain_class('zfs::params') }
+      it { should contain_class('zfs::service') }
+      it { should contain_file('/etc/zfs') }
 
-    context 'version 7', :compile do
-      let(:facts) do
-        super().merge(
-          {
-            :operatingsystemmajrelease => 7
-          }
-        )
-      end
+      it { should contain_kmod__option('zfs zfs_arc_min').with_value('0') }
+      it { should contain_kmod__option('zfs zfs_arc_max').with_value('1') }
 
-      it do
-        should contain_class('zfs')
-        should contain_class('epel')
-        should contain_package('zfs-release').with(
-          'source' => "http://archive.zfsonlinux.org/epel/zfs-release.el7.noarch.rpm"
-        )
-        should contain_package('kernel-devel')
-        should contain_package('zfs')
-        should_not contain_service('zfs')
-      end
-    end
-  end
+      case facts[:osfamily]
+      when 'Debian'
 
-  context 'on Fedora' do
-    let(:facts) do
-      {
-        :osfamily        => 'RedHat',
-        :operatingsystem => 'Fedora'
-      }
-    end
-
-    [18, 19, 20].each do |version|
-      context "version #{version}", :compile do
-        let(:facts) do
-          super().merge(
-            {
-              :operatingsystemmajrelease => version
-            }
-          )
+        let(:pre_condition) do
+          'include ::apt'
         end
 
-        it do
-          should contain_class('zfs')
-          should_not contain_class('epel')
-          should contain_package('zfs-release').with(
-            'source' => "http://archive.zfsonlinux.org/fedora/zfs-release.fc#{version}.noarch.rpm"
-          )
-          should contain_package('kernel-devel')
-          should contain_package('zfs')
-          should_not contain_service('zfs')
+        case facts[:operatingsystem]
+        when 'Ubuntu'
+          case facts[:operatingsystemrelease]
+          when '12.04', '14.04'
+            it { should contain_apt__ppa('ppa:zfs-native/stable') }
+            it { should contain_exec('modprobe zfs') }
+            it { should contain_package('python-software-properties') }
+            it { should contain_package('ubuntu-zfs') }
+            it { should contain_service('zpool-import') }
+            it { should_not contain_service('zfs-mount') }
+            it { should_not contain_service('zfs-share') }
+          else
+            it { should contain_package('zfsutils-linux') }
+            it { should contain_service('zfs-import-cache').with_ensure('stopped') }
+            it { should contain_service('zfs-import-scan').with_ensure('running') }
+            it { should contain_service('zfs-mount') }
+            it { should contain_service('zfs-share') }
+          end
+        else
+          it { should contain_class('apt::backports') }
+          it { should contain_package("linux-headers-#{facts[:kernelrelease]}") }
+          it { should contain_package('zfsutils-linux') }
+          it { should contain_service('zfs-import-cache').with_ensure('stopped') }
+          it { should contain_service('zfs-import-scan').with_ensure('running') }
+          it { should contain_service('zfs-mount') }
+          it { should contain_service('zfs-share') }
         end
-      end
-    end
-  end
+      when 'RedHat'
+        it { should contain_augeas('/etc/yum.repos.d/zfs.repo/zfs/enabled') }
+        it { should contain_augeas('/etc/yum.repos.d/zfs.repo/zfs-kmod/enabled') }
+        it { should contain_package('kernel-devel') }
+        it { should contain_package('zfs') }
+        it { should contain_package('zfs-release') }
+        it { should contain_service('zfs-mount') }
+        it { should contain_service('zfs-share') }
 
-  context 'on Ubuntu' do
-    let(:facts) do
-      {
-        :osfamily        => 'Debian',
-        :operatingsystem => 'Ubuntu',
-        :lsbdistid       => 'Ubuntu'
-      }
-    end
-
-    ['precise', 'trusty'].each do |codename|
-      context "#{codename}", :compile do
-        let(:facts) do
-          super().merge(
-            {
-              :lsbdistcodename => codename
-            }
-          )
-        end
-
-        it do
-          should contain_class('zfs')
-          should contain_class('apt')
-          should contain_apt__ppa('ppa:zfs-native/stable')
-          should contain_package('python-software-properties')
-          should contain_package('ubuntu-zfs')
-          should_not contain_service('zfs')
-        end
-      end
-    end
-  end
-
-  context 'on Debian' do
-    let(:facts) do
-      {
-        :osfamily        => 'Debian',
-        :operatingsystem => 'Debian',
-        :lsbdistid       => 'Debian'
-      }
-    end
-
-    ['squeeze', 'wheezy'].each do |codename|
-      context "#{codename}", :compile do
-        let(:facts) do
-          super().merge(
-            {
-              :lsbdistcodename => codename
-            }
-          )
-        end
-
-        it do
-          should contain_class('zfs')
-          should contain_class('apt')
-          should contain_apt__source('zfsonlinux')
-          should contain_apt__pin('zfsonlinux')
-          #should contain_package('zfsonlinux').with(
-          #  'source' => "http://archive.zfsonlinux.org/debian/pool/main/z/zfsonlinux/zfsonlinux_3~#{codename}_all.deb"
-          #)
-          should contain_package('debian-zfs')
-          should_not contain_service('zfs')
+        case facts[:operatingsystemmajrelease]
+        when '6'
+          it { should contain_exec('modprobe zfs') }
+          it { should contain_service('zfs-import') }
+        else
+          it { should contain_service('zfs-import-cache').with_ensure('stopped') }
+          it { should contain_service('zfs-import-scan').with_ensure('running') }
         end
       end
     end
