@@ -75,14 +75,13 @@ src="https://gemnasium.com/bodgit/puppet-zfs.svg"></a></p>
 
 <h4 id="label-Table+of+Contents">Table of Contents</h4>
 <ol><li>
-<p><a href="#overview">Overview</a></p>
-</li><li>
-<p><a href="#module-description">Module Description - What the module does and
-why it is useful</a></p>
+<p><a href="#description">Description</a></p>
 </li><li>
 <p><a href="#setup">Setup - The basics of getting started with zfs</a></p>
 <ul><li>
 <p><a href="#what-zfs-affects">What zfs affects</a></p>
+</li><li>
+<p><a href="#setup-requirements">Setup requirements</a></p>
 </li><li>
 <p><a href="#beginning-with-zfs">Beginning with zfs</a></p>
 </li></ul>
@@ -99,87 +98,62 @@ is doing and how</a></p>
 module</a></p>
 </li></ol>
 
-<h2 id="label-Overview">Overview</h2>
-
-<p>This module manages ZFS.</p>
-
-<h2 id="label-Module+Description">Module Description</h2>
+<h2 id="label-Description">Description</h2>
 
 <p>This module currently ensures that the ZFS packages available from <a
-href="http://zfsonlinux.org">zfsonlinux.org</a> are installed.</p>
+href="http://zfsonlinux.org">zfsonlinux.org</a> are installed and
+configured.</p>
+
+<p>RHEL/CentOS, Ubuntu and Debian are supported using Puppet 4.4.0 or later.
+On RHEL/CentOS platforms there is support for installing the kABI-tracking
+kernel modules as opposed to the default of DKMS-style kernel modules.</p>
 
 <h2 id="label-Setup">Setup</h2>
 
 <h3 id="label-What+zfs+affects">What zfs affects</h3>
-<ul><li>
-<p>The packages containing ZFS support.</p>
-</li><li>
-<p>The services controlling any ZFS-related daemons.</p>
-</li></ul>
+
+<p>This module will install kernel modules which utilises the DKMS framework
+to accomplish this. This means kernel headers, toolchains, etc. will be
+installed.</p>
+
+<h3 id="label-Setup+Requirements">Setup Requirements</h3>
+
+<p>You will need pluginsync enabled. On RHEL/CentOS platforms you will need to
+have access to the EPEL repository by using <a
+href="https://forge.puppet.com/stahnma/epel">stahnma/epel</a> or by other
+means.</p>
 
 <h3 id="label-Beginning+with+zfs">Beginning with zfs</h3>
+
+<p>In the very simplest case, you can just include the following:</p>
 
 <pre class="code ruby"><code class="ruby">include ::zfs</code></pre>
 
 <h2 id="label-Usage">Usage</h2>
 
-<p>If you want to use something else to manage the zfs daemons, you can do:</p>
+<p>For example on RHEL/CentOS to instead install the kABI-tracking kernel
+modules and tune the ARC, you can do:</p>
 
-<pre class="code ruby"><code class="ruby">class { &#39;::zfs&#39;:
-  service_manage =&gt; false,
+<pre class="code ruby"><code class="ruby">include ::epel
+
+class { &#39;::zfs&#39;:
+  kmod_type   =&gt; &#39;kabi&#39;,
+  zfs_arc_max =&gt; to_bytes(&#39;256 M&#39;),
+  zfs_arc_min =&gt; to_bytes(&#39;128 M&#39;),
+  require     =&gt; Class[&#39;::epel&#39;],
 }</code></pre>
+
+<p>To also install the ZFS Event Daemon (zed):</p>
+
+<pre class="code ruby"><code class="ruby">include ::zfs
+include ::zfs::zed</code></pre>
 
 <h2 id="label-Reference">Reference</h2>
 
-<h3 id="label-Classes">Classes</h3>
-<ul><li>
-<p>zfs: Main class for installation and service management.</p>
-</li><li>
-<p>zfs::install: Handles package installation.</p>
-</li><li>
-<p>zfs::params: Different configuration data for different systems.</p>
-</li><li>
-<p>zfs::service: Handles the zfs service.</p>
-</li></ul>
-
-<h3 id="label-Parameters">Parameters</h3>
-
-<h4 id="label-package_dependencies"><code>package_dependencies</code></h4>
-
-<p>An array of additional packages that should be installed alongside/before
-<code>package_name</code>.</p>
-
-<h4 id="label-package_ensure"><code>package_ensure</code></h4>
-
-<p>Intended state of the package providing zfs.</p>
-
-<h4 id="label-package_name"><code>package_name</code></h4>
-
-<p>The package name that provides zfs.</p>
-
-<h4 id="label-release_package_name"><code>release_package_name</code></h4>
-
-<p>The name of the package containing required package repository definitions.</p>
-
-<h4 id="label-release_package_source"><code>release_package_source</code></h4>
-
-<p>The source URL for downloading <code>release_package_name</code>.</p>
-
-<h4 id="label-service_enable"><code>service_enable</code></h4>
-
-<p>Whether to enable the zfs service.</p>
-
-<h4 id="label-service_ensure"><code>service_ensure</code></h4>
-
-<p>Intended state of the zfs service.</p>
-
-<h4 id="label-service_manage"><code>service_manage</code></h4>
-
-<p>Whether to manage the zfs service or not.</p>
-
-<h4 id="label-service_name"><code>service_name</code></h4>
-
-<p>The name of the zfs service.</p>
+<p>The reference documentation is now generated with <a
+href="https://github.com/puppetlabs/puppet-strings">puppet-strings</a> and
+the latest version is hosted <a
+href="http://bodgit.github.io/puppet-zfs/">here</a>.</p>
 
 <h2 id="label-Limitations">Limitations</h2>
 
@@ -199,12 +173,19 @@ aspects of the packages make it difficult for the module to work properly.</p>
 
 <h2 id="label-Development">Development</h2>
 
+<p>The module has both <a href="http://rspec-puppet.com">rspec-puppet</a> and
+<a href="https://github.com/puppetlabs/beaker-rspec">beaker-rspec</a>
+tests. Run them with:</p>
+
+<pre class="code ruby"><code class="ruby">$ bundle exec rake test
+$ PUPPET_INSTALL_TYPE=agent PUPPET_INSTALL_VERSION=x.y.z bundle exec rake beaker:&lt;nodeset&gt;</code></pre>
+
 <p>Please log issues or pull requests at <a
 href="https://github.com/bodgit/puppet-zfs">github</a>.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Thu Jan  5 21:18:48 2017 by
+  Generated on Sat Jan  7 19:14:07 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.5 (ruby-2.2.5).
 </div>
