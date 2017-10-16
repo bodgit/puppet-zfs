@@ -6,7 +6,7 @@
 <title>
   Puppet Class: zfs
   
-    &mdash; Documentation by YARD 0.9.5
+    &mdash; Documentation by YARD 0.9.9
   
 </title>
 
@@ -28,7 +28,7 @@
   </head>
   <body>
     <div class="nav_wrap">
-      <iframe id="nav" src="../puppet_class_list.html"></iframe>
+      <iframe id="nav" src="../puppet_class_list.html?1"></iframe>
       <div id="resizer"></div>
     </div>
 
@@ -59,8 +59,6 @@
         <div class="clear"></div>
       </div>
 
-      <iframe id="search_frame" src="../puppet_class_list.html"></iframe>
-
       <div id="content"><h1>Puppet Class: zfs</h1>
 <div class="box_info">
   
@@ -77,6 +75,7 @@
     </dd>
   </dl>
 </div>
+
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
@@ -263,11 +262,7 @@ kernel (only applies to RHEL platforms).</p>
 33
 34
 35
-36
-37
-38
-39
-40</pre>
+36</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/init.pp', line 21</span>
@@ -282,15 +277,11 @@ class zfs (
   Optional[Integer[0]] $zfs_arc_min    = undef,
 ) inherits ::zfs::params {
 
-  include ::zfs::install
-  include ::zfs::config
-  include ::zfs::service
+  contain ::zfs::install
+  contain ::zfs::config
+  contain ::zfs::service
 
-  anchor { &#39;zfs::begin&#39;: }
-  anchor { &#39;zfs::end&#39;: }
-
-  Anchor[&#39;zfs::begin&#39;] -&gt; Class[&#39;::zfs::install&#39;] ~&gt; Class[&#39;::zfs::config&#39;]
-    ~&gt; Class[&#39;::zfs::service&#39;] -&gt; Anchor[&#39;zfs::end&#39;]
+  Class[&#39;::zfs::install&#39;] ~&gt; Class[&#39;::zfs::config&#39;] ~&gt; Class[&#39;::zfs::service&#39;]
 }</pre>
       </td>
     </tr>
@@ -299,9 +290,9 @@ class zfs (
 </div>
 
       <div id="footer">
-  Generated on Sat Jan  7 19:14:07 2017 by
+  Generated on Mon Oct 16 20:46:12 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.2.5).
+  0.9.9 (ruby-2.2.5).
 </div>
 
     </div>

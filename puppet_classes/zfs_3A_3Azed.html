@@ -6,7 +6,7 @@
 <title>
   Puppet Class: zfs::zed
   
-    &mdash; Documentation by YARD 0.9.5
+    &mdash; Documentation by YARD 0.9.9
   
 </title>
 
@@ -28,7 +28,7 @@
   </head>
   <body>
     <div class="nav_wrap">
-      <iframe id="nav" src="../puppet_class_list.html"></iframe>
+      <iframe id="nav" src="../puppet_class_list.html?1"></iframe>
       <div id="resizer"></div>
     </div>
 
@@ -59,8 +59,6 @@
         <div class="clear"></div>
       </div>
 
-      <iframe id="search_frame" src="../puppet_class_list.html"></iframe>
-
       <div id="content"><h1>Puppet Class: zfs::zed</h1>
 <div class="box_info">
   
@@ -77,6 +75,7 @@
     </dd>
   </dl>
 </div>
+
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
@@ -461,8 +460,7 @@ class.</p>
 63
 64
 65
-66
-67</pre>
+66</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/zed.pp', line 33</span>
@@ -494,13 +492,12 @@ class zfs::zed (
     fail(&#39;You must include the zfs base class before using the zfs::zed class&#39;)
   }
 
-  include ::zfs::zed::install
-  include ::zfs::zed::config
-  include ::zfs::zed::service
+  contain ::zfs::zed::install
+  contain ::zfs::zed::config
+  contain ::zfs::zed::service
 
   Class[&#39;::zfs::service&#39;] -&gt; Class[&#39;::zfs::zed::install&#39;]
     -&gt; Class[&#39;::zfs::zed::config&#39;] ~&gt; Class[&#39;::zfs::zed::service&#39;]
-    -&gt; Anchor[&#39;zfs::end&#39;]
 }</pre>
       </td>
     </tr>
@@ -509,9 +506,9 @@ class zfs::zed (
 </div>
 
       <div id="footer">
-  Generated on Sat Jan  7 19:14:07 2017 by
+  Generated on Mon Oct 16 20:46:12 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.5 (ruby-2.2.5).
+  0.9.9 (ruby-2.2.5).
 </div>
 
     </div>
