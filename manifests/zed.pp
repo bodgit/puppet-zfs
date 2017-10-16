@@ -57,11 +57,10 @@ class zfs::zed (
     fail('You must include the zfs base class before using the zfs::zed class')
   }
 
-  include ::zfs::zed::install
-  include ::zfs::zed::config
-  include ::zfs::zed::service
+  contain ::zfs::zed::install
+  contain ::zfs::zed::config
+  contain ::zfs::zed::service
 
   Class['::zfs::service'] -> Class['::zfs::zed::install']
     -> Class['::zfs::zed::config'] ~> Class['::zfs::zed::service']
-    -> Anchor['zfs::end']
 }

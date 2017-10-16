@@ -49,8 +49,6 @@ describe 'zfs' do
         })
       end
 
-      it { should contain_anchor('zfs::begin') }
-      it { should contain_anchor('zfs::end') }
       it { should contain_class('zfs') }
       it { should contain_class('zfs::config') }
       it { should contain_class('zfs::install') }

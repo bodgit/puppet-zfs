@@ -28,13 +28,9 @@ class zfs (
   Optional[Integer[0]] $zfs_arc_min    = undef,
 ) inherits ::zfs::params {
 
-  include ::zfs::install
-  include ::zfs::config
-  include ::zfs::service
+  contain ::zfs::install
+  contain ::zfs::config
+  contain ::zfs::service
 
-  anchor { 'zfs::begin': }
-  anchor { 'zfs::end': }
-
-  Anchor['zfs::begin'] -> Class['::zfs::install'] ~> Class['::zfs::config']
-    ~> Class['::zfs::service'] -> Anchor['zfs::end']
+  Class['::zfs::install'] ~> Class['::zfs::config'] ~> Class['::zfs::service']
 }
