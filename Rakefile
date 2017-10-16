@@ -5,7 +5,7 @@ require 'metadata-json-lint/rake_task'
 require 'puppet-strings/tasks'
 
 CLEAN.include('spec/fixtures/manifests', 'spec/fixtures/modules')
-CLOBBER.include('.tmp', '.librarian', '.vagrant', 'Puppetfile.lock', 'log', 'junit', 'coverage')
+CLOBBER.include('.tmp', '.librarian', '.vagrant', 'Puppetfile.lock', 'log', 'junit', 'coverage', 'doc')
 
 task :spec => []; Rake::Task[:spec].clear
 task :spec do
@@ -25,7 +25,7 @@ task :test => [
   'lint',
 ]
 
-PuppetLint.configuration.log_format = '%{path}:%{linenumber}:%{check}:%{KIND}:%{message}'
+PuppetLint.configuration.log_format = '%{path}:%{line}:%{check}:%{KIND}:%{message}'
 PuppetLint.configuration.ignore_paths = ['pkg/**/*.pp', 'spec/**/*.pp', 'vendor/**/*.pp']
 PuppetLint.configuration.fail_on_warnings = true
 PuppetLint.configuration.relative = true

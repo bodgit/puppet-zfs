@@ -74,9 +74,10 @@ include ::zfs::zed
 
 ## Reference
 
-The reference documentation is now generated with
+The reference documentation is generated with
 [puppet-strings](https://github.com/puppetlabs/puppet-strings) and the latest
-version is hosted [here](http://bodgit.github.io/puppet-zfs/).
+version of the documentation is hosted at
+[https://bodgit.github.io/puppet-zfs/](https://bodgit.github.io/puppet-zfs/).
 
 ## Limitations
 
