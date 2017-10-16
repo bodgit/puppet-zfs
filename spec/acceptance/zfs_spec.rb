@@ -40,6 +40,19 @@ describe 'zfs' do
 
   it 'should work with no errors' do
     pp = <<-EOS
+      case $::osfamily {
+        'Debian': {
+          include ::apt
+
+          Class['::apt'] -> Class['::zfs']
+        }
+        'RedHat': {
+          include ::epel
+
+          Class['::epel'] -> Class['::zfs']
+        }
+      }
+
       class { '::zfs':
         zfs_arc_min => 134217728,
         zfs_arc_max => 268435456,
@@ -50,17 +63,6 @@ describe 'zfs' do
         #email_prog     => 'mail',
         #email_opts     => '',
         notify_verbose => true,
-      }
-
-      case $::osfamily {
-        'Debian': {
-          include ::apt
-        }
-        'RedHat': {
-          include ::epel
-
-          Class['::epel'] -> Class['::zfs']
-        }
       }
     EOS
 

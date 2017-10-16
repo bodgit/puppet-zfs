@@ -68,6 +68,7 @@ class zfs::install {
           default: {
             # Not 100% sure this should be instantiated here (i.e. EPEL)
             class { '::apt::backports':
+              pin    => 500,
               before => Package[$::zfs::package_name],
             }
           }
