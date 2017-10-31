@@ -23,6 +23,7 @@
 # @param spare_on_io_errors
 # @param syslog_priority
 # @param syslog_tag
+# @param use_enclosure_leds
 # @param zedlet_dir Path to package-provided zedlets.
 # @param zedlets Hash of zedlet resources to create.
 #
@@ -49,6 +50,7 @@ class zfs::zed (
   Optional[Integer[1]]           $spare_on_io_errors       = undef,
   Optional[String]               $syslog_priority          = undef,
   Optional[String]               $syslog_tag               = undef,
+  Optional[Boolean]              $use_enclosure_leds       = undef,
   Stdlib::Absolutepath           $zedlet_dir               = $::zfs::params::zedlet_dir,
   Hash[String, Hash]             $zedlets                  = $::zfs::params::zedlets,
 ) inherits ::zfs::params {

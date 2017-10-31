@@ -16,6 +16,7 @@ class zfs::zed::config {
   $spare_on_checksum_errors = $::zfs::zed::spare_on_checksum_errors
   $spare_on_io_errors       = $::zfs::zed::spare_on_io_errors
   $syslog_priority          = $::zfs::zed::syslog_priority
+  $use_enclosure_leds       = $::zfs::zed::use_enclosure_leds
   $syslog_tag               = $::zfs::zed::syslog_tag
   $zedlet_dir               = $::zfs::zed::zedlet_dir
 
