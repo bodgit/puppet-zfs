@@ -1,5 +1,12 @@
 # Change Log
 
+## [v2.1.0](https://github.com/bodgit/puppet-zfs/tree/v2.1.0) (2017-10-31)
+[Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.0.1...v2.1.0)
+
+**Implemented enhancements:**
+
+- Add ability to manage ZED\_USE\_ENCLOSURE\_LEDS setting in zed.rc template [\#4](https://github.com/bodgit/puppet-zfs/pull/4) ([millerjl1701](https://github.com/millerjl1701))
+
 ## [v2.0.1](https://github.com/bodgit/puppet-zfs/tree/v2.0.1) (2017-10-16)
 [Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.0.0...v2.0.1)
 
