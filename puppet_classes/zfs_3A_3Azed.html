@@ -358,6 +358,19 @@ class.</p>
   
     <li>
       
+        <span class='name'>use_enclosure_leds</span>
+      
+      
+        <span class='type'>(<tt>Optional[Boolean]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>zedlet_dir</span>
       
       
@@ -427,7 +440,6 @@ class.</p>
         <pre class="lines">
 
 
-33
 34
 35
 36
@@ -460,10 +472,12 @@ class.</p>
 63
 64
 65
-66</pre>
+66
+67
+68</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/zed.pp', line 33</span>
+        <pre class="code"><span class="info file"># File 'manifests/zed.pp', line 34</span>
 
 class zfs::zed (
   Stdlib::Absolutepath           $conf_dir                 = $::zfs::params::zed_conf_dir,
@@ -484,6 +498,7 @@ class zfs::zed (
   Optional[Integer[1]]           $spare_on_io_errors       = undef,
   Optional[String]               $syslog_priority          = undef,
   Optional[String]               $syslog_tag               = undef,
+  Optional[Boolean]              $use_enclosure_leds       = undef,
   Stdlib::Absolutepath           $zedlet_dir               = $::zfs::params::zedlet_dir,
   Hash[String, Hash]             $zedlets                  = $::zfs::params::zedlets,
 ) inherits ::zfs::params {
@@ -506,7 +521,7 @@ class zfs::zed (
 </div>
 
       <div id="footer">
-  Generated on Mon Oct 16 20:46:12 2017 by
+  Generated on Tue Oct 31 18:43:07 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.9 (ruby-2.2.5).
 </div>
