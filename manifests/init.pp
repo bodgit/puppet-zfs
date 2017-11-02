@@ -18,6 +18,9 @@
 # @param service_manage Whether to manage the various ZFS services.
 # @param zfs_arc_max Maximum size of the ARC in bytes.
 # @param zfs_arc_min Minimum size of the ARC in bytes.
+#
+# @see puppet_classes::zfs::zed ::zfs::zed
+# @see puppet_defined_types::zfs::scrub ::zfs::scrub
 class zfs (
   Stdlib::Absolutepath $conf_dir       = $::zfs::params::conf_dir,
   Enum['dkms', 'kabi'] $kmod_type      = $::zfs::params::kmod_type,
