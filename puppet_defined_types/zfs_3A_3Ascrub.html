@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Defined Type: zfs::zed::zedlet
+  Defined Type: zfs::scrub
   
     &mdash; Documentation by YARD 0.9.9
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  pathId = "puppet_defined_types::zfs::zed::zedlet";
+  pathId = "puppet_defined_types::zfs::scrub";
   relpath = '../';
 </script>
 
@@ -39,7 +39,7 @@
     <a href="../_index.html">Index (z)</a> &raquo;
     <span class='title'><span class='object_link'>Defined Types</span></span>
      &raquo; 
-    <span class="title">zfs::zed::zedlet</span>
+    <span class="title">zfs::scrub</span>
   
 </div>
 
@@ -59,12 +59,12 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Defined Type: zfs::zed::zedlet</h1>
+      <div id="content"><h1>Defined Type: zfs::scrub</h1>
 <div class="box_info">
   <dl>
     <dt>Defined in:</dt>
     <dd>
-      manifests/zed/zedlet.pp
+      manifests/scrub.pp
     </dd>
   </dl>
 </div>
@@ -73,10 +73,7 @@
 <div class="docstring">
   <div class="discussion">
     
-<p>Enables either a packaged or custom ZFS Event Daemon “zedlet”.</p>
-
-<p>Not specifying either <code>$content</code> or <code>$source</code> results
-in the zedlet being symlinked from the “installed zedlets” directory.</p>
+<p>Set up a zpool scrub cron entry.</p>
 
   </div>
 </div>
@@ -87,18 +84,17 @@ in the zedlet being symlinked from the “installed zedlets” directory.</p>
     
       
         <p class="example_title"><div class='inline'>
-<p>Enabling a packaged zedlet</p>
+<p>Scrub a zpool once a month</p>
 </div></p>
       
-      <pre class="example code"><code>::zfs::zed::zedlet { &#39;scrub.finish-notify.sh&#39;: }</code></pre>
-    
-      
-        <p class="example_title"><div class='inline'>
-<p>Enabling a custom zedlet</p>
-</div></p>
-      
-      <pre class="example code"><code>::zfs::zed::zedlet { &#39;scrub.finish-notify.sh&#39;:
-  source =&gt; &#39;puppet:///example/scrub.finish-notify.sh&#39;,
+      <pre class="example code"><code>include ::zfs
+
+::zfs::scrub { &#39;test&#39;:
+  hour     =&gt; &#39;1&#39;,
+  minute   =&gt; &#39;0&#39;,
+  month    =&gt; &#39;*&#39;,
+  monthday =&gt; &#39;1&#39;,
+  weekday  =&gt; &#39;*&#39;,
 }</code></pre>
     
   </div>
@@ -107,43 +103,7 @@ in the zedlet being symlinked from the “installed zedlets” directory.</p>
   
     <li>
       
-        <span class='name'>content</span>
-      
-      
-        <span class='type'>(<tt>Optional[String]</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>Content of custom zedlet</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>source</span>
-      
-      
-        <span class='type'>(<tt>Optional[String]</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>Source of custom zedlet</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>zedlet</span>
+        <span class='name'>zpool</span>
       
       
         <span class='type'>(<tt>String</tt>)</span>
@@ -154,7 +114,105 @@ in the zedlet being symlinked from the “installed zedlets” directory.</p>
       
         &mdash;
         <div class='inline'>
-<p>The filename for the zedlet</p>
+<p>The name of the zpool.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>hour</span>
+      
+      
+        <span class='type'>(<tt>Any</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>See the <code>cron</code> resource type.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>minute</span>
+      
+      
+        <span class='type'>(<tt>Any</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>See the <code>cron</code> resource type.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>month</span>
+      
+      
+        <span class='type'>(<tt>Any</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>See the <code>cron</code> resource type.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>monthday</span>
+      
+      
+        <span class='type'>(<tt>Any</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>See the <code>cron</code> resource type.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>weekday</span>
+      
+      
+        <span class='type'>(<tt>Any</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>See the <code>cron</code> resource type.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>user</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;root&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>See the <code>cron</code> resource type.</p>
 </div>
       
     </li>
@@ -165,7 +223,7 @@ in the zedlet being symlinked from the “installed zedlets” directory.</p>
   <p class="tag_title">See Also:</p>
   <ul class="see">
     
-      <li><span class='object_link'><a href="../puppet_classes/zfs_3A_3Azed.html" title="puppet_classes::zfs::zed (puppet_class)">::zfs::zed</a></span></li>
+      <li><span class='object_link'><a href="../puppet_classes/zfs.html" title="puppet_classes::zfs (puppet_class)">::zfs</a></span></li>
     
   </ul>
 <p class="tag_title">Since:</p>
@@ -178,7 +236,7 @@ in the zedlet being symlinked from the “installed zedlets” directory.</p>
       
         
         <div class='inline'>
-<p>2.0.0</p>
+<p>2.2.0</p>
 </div>
       
     </li>
@@ -192,10 +250,6 @@ in the zedlet being symlinked from the “installed zedlets” directory.</p>
         <pre class="lines">
 
 
-21
-22
-23
-24
 25
 26
 27
@@ -223,35 +277,31 @@ in the zedlet being symlinked from the “installed zedlets” directory.</p>
 49</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/zed/zedlet.pp', line 21</span>
+        <pre class="code"><span class="info file"># File 'manifests/scrub.pp', line 25</span>
 
-define zfs::zed::zedlet (
-  Optional[String] $content = undef,
-  Optional[String] $source  = undef,
-  String           $zedlet  = $title,
+define zfs::scrub (
+  Any    $hour,
+  Any    $minute,
+  Any    $month,
+  Any    $monthday,
+  Any    $weekday,
+  String $zpool    = $title,
+  String $user     = &#39;root&#39;,
 ) {
 
-  if ! defined(Class[&#39;::zfs::zed&#39;]) {
-    fail(&#39;You must include the zfs::zed base class before using any zfs::zed defined resources&#39;)
+  if ! defined(Class[&#39;::zfs&#39;]) {
+    fail(&#39;You must include the zfs base class before using any zfs defined resources&#39;)
   }
 
-  # No content, make a symlink to the system
-  if ! ($content and $source) {
-    file { &quot;${::zfs::zed::conf_dir}/${zedlet}&quot;:
-      ensure =&gt; link,
-      target =&gt; &quot;${::zfs::zed::zedlet_dir}/${zedlet}&quot;,
-    }
-  } elsif ($content or $source) {
-    file { &quot;${::zfs::zed::conf_dir}/${zedlet}&quot;:
-      ensure  =&gt; file,
-      owner   =&gt; 0,
-      group   =&gt; 0,
-      mode    =&gt; &#39;0755&#39;,
-      content =&gt; $content,
-      source  =&gt; $source,
-    }
-  } else {
-    fail(&#39;Only specify content or source.&#39;)
+  cron { &quot;zpool scrub ${zpool}&quot;:
+    command     =&gt; &quot;zpool scrub ${zpool}&quot;,
+    environment =&gt; &quot;PATH=${::path}&quot;,
+    hour        =&gt; $hour,
+    minute      =&gt; $minute,
+    month       =&gt; $month,
+    monthday    =&gt; $monthday,
+    weekday     =&gt; $weekday,
+    user        =&gt; $user,
   }
 }</pre>
       </td>

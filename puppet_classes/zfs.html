@@ -240,6 +240,15 @@ kernel (only applies to RHEL platforms).</p>
 </ul>
 
 
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="zfs_3A_3Azed.html" title="puppet_classes::zfs::zed (puppet_class)">::zfs::zed</a></span></li>
+    
+      <li><span class='object_link'><a href="../puppet_defined_types/zfs_3A_3Ascrub.html" title="puppet_defined_types::zfs::scrub (puppet_defined_type)">::zfs::scrub</a></span></li>
+    
+  </ul>
+
 </div><div class="method_details_list">
   <table class="source_code">
     <tr>
@@ -247,9 +256,6 @@ kernel (only applies to RHEL platforms).</p>
         <pre class="lines">
 
 
-21
-22
-23
 24
 25
 26
@@ -262,10 +268,13 @@ kernel (only applies to RHEL platforms).</p>
 33
 34
 35
-36</pre>
+36
+37
+38
+39</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 21</span>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 24</span>
 
 class zfs (
   Stdlib::Absolutepath $conf_dir       = $::zfs::params::conf_dir,
@@ -290,7 +299,7 @@ class zfs (
 </div>
 
       <div id="footer">
-  Generated on Tue Oct 31 18:43:07 2017 by
+  Generated on Thu Nov  2 07:15:21 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.9 (ruby-2.2.5).
 </div>
