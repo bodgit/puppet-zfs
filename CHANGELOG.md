@@ -1,5 +1,12 @@
 # Change Log
 
+## [v2.2.0](https://github.com/bodgit/puppet-zfs/tree/v2.2.0) (2017-11-02)
+[Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.1.0...v2.2.0)
+
+**Implemented enhancements:**
+
+- Set up zpool scrub cron job [\#2](https://github.com/bodgit/puppet-zfs/issues/2)
+
 ## [v2.1.0](https://github.com/bodgit/puppet-zfs/tree/v2.1.0) (2017-10-31)
 [Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.0.1...v2.1.0)
 
