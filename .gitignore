@@ -10,3 +10,4 @@ spec/fixtures/*
 pkg
 log
 coverage
+doc
