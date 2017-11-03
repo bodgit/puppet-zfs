@@ -44,7 +44,28 @@ describe 'zfs' do
         'Debian': {
           include ::apt
 
-          Class['::apt'] -> Class['::zfs']
+          case $::operatingsystem {
+            'Debian': {
+              case $::operatingsystemmajrelease {
+                '8': {
+                  class { '::apt::backports':
+                    pin    => 500,
+                    before => Class['::zfs'],
+                  }
+                }
+                default: {
+                  ::apt::source { 'contrib':
+                    location => 'http://deb.debian.org/debian',
+                    repos    => 'contrib',
+                    before   => Class['::zfs'],
+                  }
+                }
+              }
+            }
+            default: {
+              Class['::apt'] -> Class['::zfs']
+            }
+          }
         }
         'RedHat': {
           include ::epel
@@ -162,11 +183,11 @@ describe 'zfs' do
   end
 
   (1..3).each do |file|
-    # The Debian images have an ext3 filesystem so fallocate(1) doesn't work
-    describe command("fallocate -l 1G /tmp/file#{file}"), :unless => fact('operatingsystem').eql?('Debian') do
+    # The Debian 8 image has an ext3 filesystem so fallocate(1) doesn't work
+    describe command("fallocate -l 1G /tmp/file#{file}"), :unless => (fact('operatingsystem').eql?('Debian') and fact('operatingsystemmajrelease').eql?('8')) do
       its(:exit_status) { should eq 0 }
     end
-    describe command("dd if=/dev/zero of=/tmp/file#{file} count=1 bs=1G"), :if => fact('operatingsystem').eql?('Debian') do
+    describe command("dd if=/dev/zero of=/tmp/file#{file} count=1 bs=1G"), :if => (fact('operatingsystem').eql?('Debian') and fact('operatingsystemmajrelease').eql?('8')) do
       its(:exit_status) { should eq 0 }
     end
   end
@@ -218,10 +239,6 @@ describe 'zfs' do
 
   describe command('zpool destroy test') do
     its(:exit_status) { should eq 0 }
-  end
-
-  describe file('/etc/zfs/zpool.cache'), :unless => fact('operatingsystem').eql?('Ubuntu') do
-    it { should_not exist }
   end
 
   describe file('/test') do

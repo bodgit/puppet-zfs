@@ -85,7 +85,6 @@ describe 'zfs' do
             it { should contain_service('zfs-share') }
           end
         else
-          it { should contain_class('apt::backports') }
           it { should contain_package("linux-headers-#{facts[:kernelrelease]}") }
           it { should contain_package('zfsutils-linux') }
           it { should contain_service('zfs-import-cache').with_ensure('stopped') }

@@ -39,7 +39,24 @@ accomplish this. This means kernel headers, toolchains, etc. will be installed.
 
 You will need pluginsync enabled. On RHEL/CentOS platforms you will need to
 have access to the EPEL repository by using
-[stahnma/epel](https://forge.puppet.com/stahnma/epel) or by other means.
+[stahnma/epel](https://forge.puppet.com/stahnma/epel) or by other means. On
+Debian 8 you will need to enable backports using
+[puppetlabs/apt](https://forge.puppet.com/puppetlabs/apt) with something like:
+
+```puppet
+class { '::apt::backports':
+  pin => 500,
+}
+```
+
+Debian 9 and higher require the contrib repository which can be enabled with:
+
+```puppet
+::apt::source { 'contrib':
+  location => 'http://deb.debian.org/debian',
+  repos    => 'contrib',
+}
+```
 
 ### Beginning with zfs
 
@@ -87,7 +104,7 @@ The module has been tested on:
 
 * RedHat Enterprise Linux 6/7
 * Ubuntu 16.04
-* Debian 8
+* Debian 8, 9
 
 It should also work on Ubuntu 12.04/14.04 however the quality of some aspects
 of the packages make it difficult for the module to work properly.
