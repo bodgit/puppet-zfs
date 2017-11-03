@@ -1,5 +1,12 @@
 # Change Log
 
+## [v2.2.1](https://github.com/bodgit/puppet-zfs/tree/v2.2.1) (2017-11-03)
+[Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.2.0...v2.2.1)
+
+**Implemented enhancements:**
+
+- Debian 9 [\#5](https://github.com/bodgit/puppet-zfs/issues/5)
+
 ## [v2.2.0](https://github.com/bodgit/puppet-zfs/tree/v2.2.0) (2017-11-02)
 [Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.1.0...v2.2.0)
 
