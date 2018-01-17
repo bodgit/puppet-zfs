@@ -1,5 +1,12 @@
 # Change Log
 
+## [v2.2.2](https://github.com/bodgit/puppet-zfs/tree/v2.2.2) (2018-01-17)
+[Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.2.1...v2.2.2)
+
+**Fixed bugs:**
+
+- CentOS 7.4 [\#6](https://github.com/bodgit/puppet-zfs/issues/6)
+
 ## [v2.2.1](https://github.com/bodgit/puppet-zfs/tree/v2.2.1) (2017-11-03)
 [Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.2.0...v2.2.1)
 
