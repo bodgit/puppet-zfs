@@ -5,7 +5,15 @@ class zfs::install {
     case $::osfamily {
       'RedHat': {
 
-        $_source = "http://download.zfsonlinux.org/epel/zfs-release.el${::operatingsystemmajrelease}.noarch.rpm"
+        $_source = $::operatingsystemmajrelease ? {
+          # When 7.5 appears, this logic may need tweaking
+          '7'     => $::operatingsystemrelease ? {
+            # RHEL release is 7.x, CentOS release is 7.x.YYMM
+            /^7\.[012]/ => "http://download.zfsonlinux.org/epel/zfs-release.el${::operatingsystemmajrelease}.noarch.rpm",
+            default     => "http://download.zfsonlinux.org/epel/zfs-release.el${regsubst($::operatingsystemrelease, '^7\.(\d).*$', '7_\1')}.noarch.rpm",
+          },
+          default => "http://download.zfsonlinux.org/epel/zfs-release.el${::operatingsystemmajrelease}.noarch.rpm",
+        }
 
         package { 'zfs-release':
           ensure   => present,
