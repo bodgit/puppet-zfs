@@ -170,7 +170,7 @@ kernel (only applies to RHEL platforms).</p>
         <span class='name'>package_name</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Variant[String, Array[String, 1]]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$::zfs::params::zfs_package_name</tt>)</em>
@@ -277,13 +277,13 @@ kernel (only applies to RHEL platforms).</p>
         <pre class="code"><span class="info file"># File 'manifests/init.pp', line 24</span>
 
 class zfs (
-  Stdlib::Absolutepath $conf_dir       = $::zfs::params::conf_dir,
-  Enum[&#39;dkms&#39;, &#39;kabi&#39;] $kmod_type      = $::zfs::params::kmod_type,
-  Boolean              $manage_repo    = $::zfs::params::manage_repo,
-  String               $package_name   = $::zfs::params::zfs_package_name,
-  Boolean              $service_manage = $::zfs::params::service_manage,
-  Optional[Integer[0]] $zfs_arc_max    = undef,
-  Optional[Integer[0]] $zfs_arc_min    = undef,
+  Stdlib::Absolutepath              $conf_dir       = $::zfs::params::conf_dir,
+  Enum[&#39;dkms&#39;, &#39;kabi&#39;]              $kmod_type      = $::zfs::params::kmod_type,
+  Boolean                           $manage_repo    = $::zfs::params::manage_repo,
+  Variant[String, Array[String, 1]] $package_name   = $::zfs::params::zfs_package_name,
+  Boolean                           $service_manage = $::zfs::params::service_manage,
+  Optional[Integer[0]]              $zfs_arc_max    = undef,
+  Optional[Integer[0]]              $zfs_arc_min    = undef,
 ) inherits ::zfs::params {
 
   contain ::zfs::install
@@ -299,7 +299,7 @@ class zfs (
 </div>
 
       <div id="footer">
-  Generated on Fri Nov  3 18:55:59 2017 by
+  Generated on Sat Feb 24 19:35:50 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.9 (ruby-2.2.5).
 </div>
