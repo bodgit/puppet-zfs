@@ -78,6 +78,7 @@ describe 'zfs' do
             it { should_not contain_service('zfs-mount') }
             it { should_not contain_service('zfs-share') }
           else
+            it { should contain_package('zfs-dkms') }
             it { should contain_package('zfsutils-linux') }
             it { should contain_service('zfs-import-cache').with_ensure('stopped') }
             it { should contain_service('zfs-import-scan').with_ensure('running') }
@@ -86,6 +87,7 @@ describe 'zfs' do
           end
         else
           it { should contain_package("linux-headers-#{facts[:kernelrelease]}") }
+          it { should contain_package('zfs-dkms') }
           it { should contain_package('zfsutils-linux') }
           it { should contain_service('zfs-import-cache').with_ensure('stopped') }
           it { should contain_service('zfs-import-scan').with_ensure('running') }

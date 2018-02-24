@@ -39,7 +39,10 @@ class zfs::params {
             }
             default: {
               $manage_repo      = false
-              $zfs_package_name = 'zfsutils-linux'
+              $zfs_package_name = [
+                'zfs-dkms',
+                'zfsutils-linux',
+              ]
             }
           }
         }
@@ -47,7 +50,10 @@ class zfs::params {
           $manage_repo      = true
           $zed_service_name = 'zfs-zed'
           $zedlet_dir       = '/usr/lib/x86_64-linux-gnu/zfs/zed.d'
-          $zfs_package_name = 'zfsutils-linux'
+          $zfs_package_name = [
+            'zfs-dkms',
+            'zfsutils-linux',
+          ]
         }
       }
     }
