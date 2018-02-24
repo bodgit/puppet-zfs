@@ -44,6 +44,13 @@ describe 'zfs' do
         'Debian': {
           include ::apt
 
+          ::apt::setting { 'conf-recommends':
+            content => @(EOS/L),
+              APT::Install-Recommends "false";
+              APT::Install-Suggests "false";
+              | EOS
+          }
+
           case $::operatingsystem {
             'Debian': {
               case $::operatingsystemmajrelease {
