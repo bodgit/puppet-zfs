@@ -1,5 +1,12 @@
 # Change Log
 
+## [v2.2.3](https://github.com/bodgit/puppet-zfs/tree/v2.2.3) (2018-02-24)
+[Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.2.2...v2.2.3)
+
+**Fixed bugs:**
+
+- Does not install the kernel modules on Debian [\#7](https://github.com/bodgit/puppet-zfs/issues/7)
+
 ## [v2.2.2](https://github.com/bodgit/puppet-zfs/tree/v2.2.2) (2018-01-17)
 [Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.2.1...v2.2.2)
 
