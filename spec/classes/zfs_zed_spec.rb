@@ -10,7 +10,7 @@ describe 'zfs::zed' do
       }
     end
 
-    it { expect { should compile }.to raise_error(/not supported on an Unsupported/) }
+    it { is_expected.to compile.and_raise_error(%r{not supported on an Unsupported}) }
   end
 
   on_supported_os.each do |os, facts|
@@ -43,19 +43,21 @@ describe 'zfs::zed' do
       end
 
       context 'without zfs class included' do
-        it { expect { should compile }.to raise_error(/must include the zfs base class/) }
+        it { is_expected.to compile.and_raise_error(%r{must include the zfs base class}) }
       end
 
-      context 'with zfs class included', :compile do
+      context 'with zfs class included' do
 
-        it { should contain_class('zfs') }
-        it { should contain_class('zfs::zed') }
-        it { should contain_class('zfs::zed::config') }
-        it { should contain_class('zfs::zed::install') }
-        it { should contain_class('zfs::zed::service') }
-        it { should contain_file('/etc/zfs/zed.d') }
-        it { should contain_file('/etc/zfs/zed.d/zed.rc') }
-        it { should contain_file('/etc/zfs/zed.d/zed-functions.sh') }
+        it { is_expected.to compile.with_all_deps }
+
+        it { is_expected.to contain_class('zfs') }
+        it { is_expected.to contain_class('zfs::zed') }
+        it { is_expected.to contain_class('zfs::zed::config') }
+        it { is_expected.to contain_class('zfs::zed::install') }
+        it { is_expected.to contain_class('zfs::zed::service') }
+        it { is_expected.to contain_file('/etc/zfs/zed.d') }
+        it { is_expected.to contain_file('/etc/zfs/zed.d/zed.rc') }
+        it { is_expected.to contain_file('/etc/zfs/zed.d/zed-functions.sh') }
         [
           'all-syslog.sh',
           'checksum-notify.sh',
@@ -66,8 +68,8 @@ describe 'zfs::zed' do
           'resilver.finish-notify.sh',
           'scrub.finish-notify.sh',
         ].each do |x|
-          it { should contain_file("/etc/zfs/zed.d/#{x}") }
-          it { should contain_zfs__zed__zedlet(x) }
+          it { is_expected.to contain_file("/etc/zfs/zed.d/#{x}") }
+          it { is_expected.to contain_zfs__zed__zedlet(x) }
         end
 
         case facts[:osfamily]
@@ -79,27 +81,27 @@ describe 'zfs::zed' do
 
           case facts[:operatingsystem]
           when 'Ubuntu'
-            it { should contain_service('zed') }
+            it { is_expected.to contain_service('zed') }
             case facts[:operatingsystemrelease]
             when '12.04', '14.04'
             else
-              it { should contain_zfs__zed__zedlet('zed-functions.sh') }
+              it { is_expected.to contain_zfs__zed__zedlet('zed-functions.sh') }
             end
           else
-            it { should contain_exec('systemctl daemon-reload') }
-            it { should contain_file('/etc/systemd/system/zfs-zed.service.d') }
-            it { should contain_file('/etc/systemd/system/zfs-zed.service.d/override.conf') }
-            it { should contain_service('zfs-zed') }
+            it { is_expected.to contain_exec('systemctl daemon-reload') }
+            it { is_expected.to contain_file('/etc/systemd/system/zfs-zed.service.d') }
+            it { is_expected.to contain_file('/etc/systemd/system/zfs-zed.service.d/override.conf') }
+            it { is_expected.to contain_service('zfs-zed') }
           end
 
-          it { should contain_package('zfs-zed') }
+          it { is_expected.to contain_package('zfs-zed') }
         when 'RedHat'
 
           let(:pre_condition) do
             'include ::zfs'
           end
 
-          it { should contain_service('zfs-zed') }
+          it { is_expected.to contain_service('zfs-zed') }
         end
       end
     end

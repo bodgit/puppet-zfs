@@ -17,11 +17,11 @@ describe 'zfs' do
       }
     end
 
-    it { expect { should compile }.to raise_error(/not supported on an Unsupported/) }
+    it { is_expected.to compile.and_raise_error(%r{not supported on an Unsupported}) }
   end
 
   on_supported_os.each do |os, facts|
-    context "on #{os}", :compile do
+    context "on #{os}" do
       let(:facts) do
         facts.merge({
           :zfs_startup_provider    => case facts[:osfamily]
@@ -49,15 +49,17 @@ describe 'zfs' do
         })
       end
 
-      it { should contain_class('zfs') }
-      it { should contain_class('zfs::config') }
-      it { should contain_class('zfs::install') }
-      it { should contain_class('zfs::params') }
-      it { should contain_class('zfs::service') }
-      it { should contain_file('/etc/zfs') }
+      it { is_expected.to compile.with_all_deps }
 
-      it { should contain_kmod__option('zfs zfs_arc_min').with_value('0') }
-      it { should contain_kmod__option('zfs zfs_arc_max').with_value('1') }
+      it { is_expected.to contain_class('zfs') }
+      it { is_expected.to contain_class('zfs::config') }
+      it { is_expected.to contain_class('zfs::install') }
+      it { is_expected.to contain_class('zfs::params') }
+      it { is_expected.to contain_class('zfs::service') }
+      it { is_expected.to contain_file('/etc/zfs') }
+
+      it { is_expected.to contain_kmod__option('zfs zfs_arc_min').with_value('0') }
+      it { is_expected.to contain_kmod__option('zfs zfs_arc_max').with_value('1') }
 
       case facts[:osfamily]
       when 'Debian'
@@ -70,46 +72,46 @@ describe 'zfs' do
         when 'Ubuntu'
           case facts[:operatingsystemrelease]
           when '12.04', '14.04'
-            it { should contain_apt__ppa('ppa:zfs-native/stable') }
-            it { should contain_exec('modprobe zfs') }
-            it { should contain_package('python-software-properties') }
-            it { should contain_package('ubuntu-zfs') }
-            it { should contain_service('zpool-import') }
+            it { is_expected.to contain_apt__ppa('ppa:zfs-native/stable') }
+            it { is_expected.to contain_exec('modprobe zfs') }
+            it { is_expected.to contain_package('python-software-properties') }
+            it { is_expected.to contain_package('ubuntu-zfs') }
+            it { is_expected.to contain_service('zpool-import') }
             it { should_not contain_service('zfs-mount') }
             it { should_not contain_service('zfs-share') }
           else
-            it { should contain_package('zfs-dkms') }
-            it { should contain_package('zfsutils-linux') }
-            it { should contain_service('zfs-import-cache').with_ensure('stopped') }
-            it { should contain_service('zfs-import-scan').with_ensure('running') }
-            it { should contain_service('zfs-mount') }
-            it { should contain_service('zfs-share') }
+            it { is_expected.to contain_package('zfs-dkms') }
+            it { is_expected.to contain_package('zfsutils-linux') }
+            it { is_expected.to contain_service('zfs-import-cache').with_ensure('stopped') }
+            it { is_expected.to contain_service('zfs-import-scan').with_ensure('running') }
+            it { is_expected.to contain_service('zfs-mount') }
+            it { is_expected.to contain_service('zfs-share') }
           end
         else
-          it { should contain_package("linux-headers-#{facts[:kernelrelease]}") }
-          it { should contain_package('zfs-dkms') }
-          it { should contain_package('zfsutils-linux') }
-          it { should contain_service('zfs-import-cache').with_ensure('stopped') }
-          it { should contain_service('zfs-import-scan').with_ensure('running') }
-          it { should contain_service('zfs-mount') }
-          it { should contain_service('zfs-share') }
+          it { is_expected.to contain_package("linux-headers-#{facts[:kernelrelease]}") }
+          it { is_expected.to contain_package('zfs-dkms') }
+          it { is_expected.to contain_package('zfsutils-linux') }
+          it { is_expected.to contain_service('zfs-import-cache').with_ensure('stopped') }
+          it { is_expected.to contain_service('zfs-import-scan').with_ensure('running') }
+          it { is_expected.to contain_service('zfs-mount') }
+          it { is_expected.to contain_service('zfs-share') }
         end
       when 'RedHat'
-        it { should contain_augeas('/etc/yum.repos.d/zfs.repo/zfs/enabled') }
-        it { should contain_augeas('/etc/yum.repos.d/zfs.repo/zfs-kmod/enabled') }
-        it { should contain_package('kernel-devel') }
-        it { should contain_package('zfs') }
-        it { should contain_package('zfs-release') }
-        it { should contain_service('zfs-mount') }
-        it { should contain_service('zfs-share') }
+        it { is_expected.to contain_augeas('/etc/yum.repos.d/zfs.repo/zfs/enabled') }
+        it { is_expected.to contain_augeas('/etc/yum.repos.d/zfs.repo/zfs-kmod/enabled') }
+        it { is_expected.to contain_package('kernel-devel') }
+        it { is_expected.to contain_package('zfs') }
+        it { is_expected.to contain_package('zfs-release') }
+        it { is_expected.to contain_service('zfs-mount') }
+        it { is_expected.to contain_service('zfs-share') }
 
         case facts[:operatingsystemmajrelease]
         when '6'
-          it { should contain_exec('modprobe zfs') }
-          it { should contain_service('zfs-import') }
+          it { is_expected.to contain_exec('modprobe zfs') }
+          it { is_expected.to contain_service('zfs-import') }
         else
-          it { should contain_service('zfs-import-cache').with_ensure('stopped') }
-          it { should contain_service('zfs-import-scan').with_ensure('running') }
+          it { is_expected.to contain_service('zfs-import-cache').with_ensure('stopped') }
+          it { is_expected.to contain_service('zfs-import-scan').with_ensure('running') }
         end
       end
     end

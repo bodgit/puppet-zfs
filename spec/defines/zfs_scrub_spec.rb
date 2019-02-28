@@ -26,13 +26,15 @@ describe 'zfs::scrub' do
       end
 
       context 'without zfs class included' do
-        it { expect { should compile }.to raise_error(/must include the zfs base class/) }
+        it { is_expected.to compile.and_raise_error(%r{must include the zfs base class}) }
       end
 
-      context 'with zfs class included', :compile do
+      context 'with zfs class included' do
 
-        it { should contain_cron('zpool scrub test') }
-        it { should contain_zfs__scrub('test') }
+        it { is_expected.to compile.with_all_deps }
+
+        it { is_expected.to contain_cron('zpool scrub test') }
+        it { is_expected.to contain_zfs__scrub('test') }
 
         case facts[:osfamily]
         when 'Debian'
