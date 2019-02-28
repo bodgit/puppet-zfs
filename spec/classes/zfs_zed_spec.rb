@@ -17,27 +17,6 @@ describe 'zfs::zed' do
     context "on #{os}" do
       let(:facts) do
         facts.merge({
-          :zfs_startup_provider    => case facts[:osfamily]
-                                      when 'RedHat'
-                                        case facts[:operatingsystemmajrelease]
-                                        when '6'
-                                          'init'
-                                        else
-                                          'systemd'
-                                        end
-                                      when 'Debian'
-                                        case facts[:operatingsystem]
-                                        when 'Ubuntu'
-                                          case facts[:operatingsystemrelease]
-                                          when '12.04', '14.04'
-                                            'init'
-                                          else
-                                            'systemd'
-                                          end
-                                        else
-                                          'systemd'
-                                        end
-                                      end,
           :zfs_zpool_cache_present => false,
         })
       end

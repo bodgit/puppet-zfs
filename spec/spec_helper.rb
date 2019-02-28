@@ -12,6 +12,30 @@ end
 
 include RspecPuppetFacts
 
+add_custom_fact :service_provider, lambda { |os, facts|
+  case facts[:osfamily]
+  when 'RedHat'
+    case facts[:operatingsystemmajrelease]
+    when '6'
+      'init'
+    else
+      'systemd'
+    end
+  when 'Debian'
+    case facts[:operatingsystem]
+    when 'Ubuntu'
+      case facts[:operatingsystemrelease]
+      when '12.04', '14.04'
+        'init'
+      else
+        'systemd'
+      end
+    else
+      'systemd'
+    end
+  end
+}
+
 RSpec.configure do |c|
   c.default_facts = { :augeasversion => '0.10.0' }
 end

@@ -10,7 +10,6 @@ describe 'zfs::zed::zedlet' do
     context "on #{os}" do
       let(:facts) do
         facts.merge({
-          :zfs_startup_provider    => 'init',
           :zfs_zpool_cache_present => false,
         })
       end

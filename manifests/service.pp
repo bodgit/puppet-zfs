@@ -2,7 +2,7 @@
 class zfs::service {
 
   if $::zfs::service_manage {
-    case $::zfs_startup_provider {
+    case $::service_provider {
       'systemd': {
         $cache_ensure = str2bool($::zfs_zpool_cache_present) ? {
           true    => 'running',
@@ -74,7 +74,7 @@ class zfs::service {
     }
 
     # Not Ubuntu 12.04 or 14.04, essentially
-    if $::zfs_startup_provider == 'systemd' or $::osfamily == 'RedHat' {
+    if $::service_provider == 'systemd' or $::osfamily == 'RedHat' {
       service { 'zfs-mount':
         ensure     => running,
         enable     => true,
