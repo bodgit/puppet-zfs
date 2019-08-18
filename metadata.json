@@ -1,6 +1,6 @@
 {
   "name": "bodgit-zfs",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "author": "bodgit",
   "summary": "Puppet Module for managing ZFS",
   "license": "Apache-2.0",
