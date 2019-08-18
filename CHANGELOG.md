@@ -1,5 +1,15 @@
 # Change Log
 
+## [v2.2.4](https://github.com/bodgit/puppet-zfs/tree/v2.2.4) (2019-08-18)
+[Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.2.3...v2.2.4)
+
+**Implemented enhancements:**
+
+- Restrictive dependency on puppetlabs/apt [\#11](https://github.com/bodgit/puppet-zfs/issues/11)
+- Update support for Puppet 6.x [\#10](https://github.com/bodgit/puppet-zfs/issues/10)
+- Use service\_provider fact from stdlib [\#9](https://github.com/bodgit/puppet-zfs/issues/9)
+- \[WIP\] Bump puppetlabs-apt dependency to permit 7.x [\#12](https://github.com/bodgit/puppet-zfs/pull/12) ([optiz0r](https://github.com/optiz0r))
+
 ## [v2.2.3](https://github.com/bodgit/puppet-zfs/tree/v2.2.3) (2018-02-24)
 [Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.2.2...v2.2.3)
 
