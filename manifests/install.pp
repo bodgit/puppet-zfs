@@ -5,31 +5,30 @@ class zfs::install {
     case $::osfamily {
       'RedHat': {
 
-        $_source = $::operatingsystemmajrelease ? {
-          # When 7.5 appears, this logic may need tweaking
-          '7'     => $::operatingsystemrelease ? {
-            # RHEL release is 7.x, CentOS release is 7.x.YYMM
-            /^7\.[012]/ => "http://download.zfsonlinux.org/epel/zfs-release.el${::operatingsystemmajrelease}.noarch.rpm",
-            default     => "http://download.zfsonlinux.org/epel/zfs-release.el${regsubst($::operatingsystemrelease, '^7\.(\d).*$', '7_\1')}.noarch.rpm",
-          },
-          default => "http://download.zfsonlinux.org/epel/zfs-release.el${::operatingsystemmajrelease}.noarch.rpm",
+        yum::gpgkey { '/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux':
+          ensure => 'present',
+          source => 'puppet:///modules/zfs/RPM-GPG-KEY-zfsonlinux',
         }
 
-        package { 'zfs-release':
-          ensure   => present,
-          provider => rpm,
-          source   => $_source,
+        file { '/etc/yum.repos.d/zfs.repo':
+          ensure  => 'file',
+          content => epp('zfs/zfs.repo.epp', {
+            os_version => $facts.dig('os', 'release', 'full').lest || {
+              fail('Could not get OS version')
+            },
+          }),
+          require => Yum::Gpgkey['/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux'],
         }
 
         augeas { '/etc/yum.repos.d/zfs.repo/zfs/enabled':
           context => '/files/etc/yum.repos.d/zfs.repo/zfs',
-          require => Package['zfs-release'],
+          require => File['/etc/yum.repos.d/zfs.repo'],
           before  => Package[$::zfs::package_name],
         }
 
         augeas { '/etc/yum.repos.d/zfs.repo/zfs-kmod/enabled':
           context => '/files/etc/yum.repos.d/zfs.repo/zfs-kmod',
-          require => Package['zfs-release'],
+          require => File['/etc/yum.repos.d/zfs.repo'],
           before  => Package[$::zfs::package_name],
         }
 
