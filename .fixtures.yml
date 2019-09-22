@@ -1,3 +1,19 @@
 fixtures:
   symlinks:
     zfs: "#{source_dir}"
+  forge_modules:
+    stdlib:
+      repo: "puppetlabs/stdlib"
+      ref: "4.13.0"
+    apt:
+      repo: "puppetlabs/apt"
+      ref: "2.2.0"
+    kmod:
+      repo: "camptocamp/kmod"
+      ref: "2.0.0"
+    augeas_core:
+      repo: "puppetlabs/augeas_core"
+      ref: "1.0.1"
+    cron_core:
+      repo: "puppetlabs/cron_core"
+      ref: "1.0.0"

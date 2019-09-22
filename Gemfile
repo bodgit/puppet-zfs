@@ -22,7 +22,6 @@ group :development, :test do
   gem 'puppet-lint-fileserver-check',                     :require => false, :git => 'https://github.com/bodgit/puppet-lint-fileserver-check.git', :branch => 'puppet-lint-2.x'
   gem 'puppet-lint-file_source_rights-check',             :require => false
   gem 'puppet-lint-alias-check',                          :require => false
-  gem 'librarian-puppet',                                 :require => false
   gem 'beaker', '>= 3.0.0',                               :require => false
   gem 'beaker-rspec', '>= 6.0.0',                         :require => false
   gem 'rspec-puppet-facts', '>= 1.1.1',                   :require => false
