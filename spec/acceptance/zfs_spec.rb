@@ -55,9 +55,17 @@ describe 'zfs' do
             'Debian': {
               case $::operatingsystemmajrelease {
                 '8': {
+                  ::apt::setting { 'conf-validity':
+                    content => @(EOS/L),
+                      Acquire::Check-Valid-Until "false";
+                      | EOS
+                  }
+
                   class { '::apt::backports':
-                    pin    => 500,
-                    before => Class['::zfs'],
+                    location => 'http://archive.debian.org/debian',
+                    pin      => 500,
+                    require  => ::Apt::Setting['conf-validity'],
+                    before   => Class['::zfs'],
                   }
                 }
                 default: {

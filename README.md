@@ -44,8 +44,15 @@ Debian 8 you will need to enable backports using
 [puppetlabs/apt](https://forge.puppet.com/puppetlabs/apt) with something like:
 
 ```puppet
+::apt::setting { 'conf-validity':
+  content => @(EOS/L),
+    Acquire::Check-Valid-Until "false";
+    | EOS
+}
+
 class { '::apt::backports':
-  pin => 500,
+  location => 'http://archive.debian.org/debian',
+  pin      => 500,
 }
 ```
 
