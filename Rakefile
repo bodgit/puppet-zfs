@@ -7,17 +7,6 @@ require 'puppet-strings/tasks'
 CLEAN.include('spec/fixtures/manifests', 'spec/fixtures/modules')
 CLOBBER.include('.tmp', '.librarian', '.vagrant', 'Puppetfile.lock', 'log', 'junit', 'coverage', 'doc')
 
-task :spec => []; Rake::Task[:spec].clear
-task :spec do
-  Rake::Task[:spec_prep].invoke
-  Rake::Task[:spec_standalone].invoke
-end
-
-task :librarian_spec_prep do
-  sh 'librarian-puppet install --path=spec/fixtures/modules/'
-end
-task :spec_prep => :librarian_spec_prep
-
 task :test => [
   'metadata_lint',
   'syntax',
