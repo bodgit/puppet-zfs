@@ -23,6 +23,7 @@ group :development, :test do
   gem 'puppet-lint-file_source_rights-check',             :require => false
   gem 'puppet-lint-alias-check',                          :require => false
   gem 'beaker', '>= 3.0.0',                               :require => false
+  gem 'beaker-vagrant',                                   :require => false
   gem 'beaker-rspec', '>= 6.0.0',                         :require => false
   gem 'rspec-puppet-facts', '>= 1.1.1',                   :require => false
   gem 'coveralls',                                        :require => false
