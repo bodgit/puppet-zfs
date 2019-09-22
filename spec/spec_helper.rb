@@ -37,6 +37,7 @@ add_custom_fact :service_provider, lambda { |os, facts|
 }
 
 RSpec.configure do |c|
+  c.formatter = :documentation
   c.default_facts = { :augeasversion => '0.10.0' }
 end
 
