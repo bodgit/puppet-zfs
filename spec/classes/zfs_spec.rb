@@ -68,6 +68,7 @@ describe 'zfs' do
           end
         else
           it { is_expected.to contain_package("linux-headers-#{facts[:kernelrelease]}") }
+          it { is_expected.to contain_package("linux-headers-#{facts[:architecture]}") }
           it { is_expected.to contain_package('zfs-dkms') }
           it { is_expected.to contain_package('zfsutils-linux') }
           it { is_expected.to contain_service('zfs-import-cache').with_ensure('stopped') }
