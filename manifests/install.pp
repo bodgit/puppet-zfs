@@ -105,7 +105,7 @@ class zfs::install {
           # noop
         }
         default: {
-          ensure_packages(["linux-headers-${::architecture}"], {
+          ensure_packages(["linux-headers-${::kernelrelease}", "linux-headers-${::architecture}"], {
             before => Package[$::zfs::package_name],
           })
         }
