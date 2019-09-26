@@ -94,6 +94,7 @@ class zfs::install {
       case $::zfs::kmod_type {
         'dkms': {
           ensure_packages(['kernel-devel'], {
+            ensure => $::kernelrelease,
             before => Package[$::zfs::package_name],
           })
         }
