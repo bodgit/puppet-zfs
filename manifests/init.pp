@@ -25,8 +25,6 @@ class zfs (
   Stdlib::Absolutepath              $conf_dir            = $::zfs::params::conf_dir,
   Enum['dkms', 'kabi']              $kmod_type           = $::zfs::params::kmod_type,
   Boolean                           $manage_repo         = $::zfs::params::manage_repo,
-  Boolean                           $use_testing         = $::zfs::params::use_testing,
-  Boolean                           $enable_source_repos = $::zfs::params::enable_source_repos,
   Variant[String, Array[String, 1]] $package_name        = $::zfs::params::zfs_package_name,
   Boolean                           $service_manage      = $::zfs::params::service_manage,
   Optional[Integer[0]]              $zfs_arc_max         = undef,

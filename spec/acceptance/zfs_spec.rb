@@ -107,7 +107,7 @@ describe 'zfs' do
   end
 
   describe package('zfs-release'), :if => fact('osfamily').eql?('RedHat') do
-    it { should be_installed }
+    it { should_not be_installed }
   end
 
   describe package(package) do
@@ -248,8 +248,8 @@ describe 'zfs' do
   # Check zed noticed and sent the scrub events to syslog
   describe file(logfile) do
     it { should be_file }
-    its(:content) { should match /zed (?:\[\d+\])? : \s eid=\d+ \s class=scrub.start \s pool=test$/x }
-    its(:content) { should match /zed (?:\[\d+\])? : \s eid=\d+ \s class=scrub.finish \s pool=test$/x }
+    its(:content) { should match /zed (?: \[\d+\] )? : \s eid=\d+ \s class=scrub.start \s (?: pool=test | pool_guid=0x[0-9A-F]+ )/x }
+    its(:content) { should match /zed (?: \[\d+\] )? : \s eid=\d+ \s class=scrub.finish \s (?: pool=test | pool_guid=0x[0-9A-F]+ )/x }
   end
 
   describe command('zpool destroy test') do

@@ -1,11 +1,11 @@
 # @!visibility private
 class zfs::params {
 
-  $conf_dir            = '/etc/zfs'
-  $kmod_type           = 'dkms'
-  $service_manage      = true
-  $zed_conf_dir        = "${conf_dir}/zed.d"
-  $zedlets             = {
+  $conf_dir       = '/etc/zfs'
+  $kmod_type      = 'dkms'
+  $service_manage = true
+  $zed_conf_dir   = "${conf_dir}/zed.d"
+  $zedlets        = {
     'all-syslog.sh'             => {},
     'checksum-notify.sh'        => {},
     'checksum-spare.sh'         => {},
@@ -15,8 +15,6 @@ class zfs::params {
     'resilver.finish-notify.sh' => {},
     'scrub.finish-notify.sh'    => {},
   }
-  $use_testing         = false
-  $enable_source_repos = false
 
   case $::osfamily {
     'RedHat': {

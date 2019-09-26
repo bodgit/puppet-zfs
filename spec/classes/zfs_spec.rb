@@ -77,13 +77,18 @@ describe 'zfs' do
           it { is_expected.to contain_service('zfs-share') }
         end
       when 'RedHat'
-        it { is_expected.to contain_augeas('/etc/yum.repos.d/zfs.repo/zfs/enabled') }
-        it { is_expected.to contain_augeas('/etc/yum.repos.d/zfs.repo/zfs-kmod/enabled') }
+        it { is_expected.to contain_file('/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux') }
         it { is_expected.to contain_package('kernel-devel') }
         it { is_expected.to contain_package('zfs') }
-        it { is_expected.to contain_package('zfs-release') }
+        it { is_expected.not_to contain_package('zfs-release') }
         it { is_expected.to contain_service('zfs-mount') }
         it { is_expected.to contain_service('zfs-share') }
+        it { is_expected.to contain_yumrepo('zfs') }
+        it { is_expected.to contain_yumrepo('zfs-kmod') }
+        it { is_expected.to contain_yumrepo('zfs-source') }
+        it { is_expected.to contain_yumrepo('zfs-testing') }
+        it { is_expected.to contain_yumrepo('zfs-testing-kmod') }
+        it { is_expected.to contain_yumrepo('zfs-testing-source') }
 
         case facts[:operatingsystemmajrelease]
         when '6'

@@ -77,8 +77,8 @@
       "version_requirement": ">=2.0.0 <3.0.0"
     },
     {
-      "name": "puppetlabs/augeas_core",
-      "version_requirement": ">=1.0.1 <2.0.0"
+      "name": "puppetlabs/yumrepo_core",
+      "version_requirement": ">=1.0.2 <2.0.0"
     },
     {
       "name": "puppetlabs/cron_core",

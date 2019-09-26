@@ -4,62 +4,66 @@ class zfs::install {
   if $::zfs::manage_repo {
     case $::osfamily {
       'RedHat': {
-
         file { '/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux':
-          ensure => 'present',
-          source => 'puppet:///modules/zfs/RPM-GPG-KEY-zfsonlinux',
+          ensure  => file,
+          owner   => 0,
+          group   => 0,
+          mode    => '0644',
+          content => file("${module_name}/RPM-GPG-KEY-zfsonlinux"),
         }
 
-        $os_version = $facts.dig('os', 'release', 'full').then |$s| {
-          $s.regsubst(/^([0-9]+\.[0-9]+)/, '\1')
-        }.lest || {
-          fail('Could not get OS version')
+        $baseurl = 'http://download.zfsonlinux.org'
+        $release = $::operatingsystemmajrelease ? {
+          '7'     => $::operatingsystemrelease ? {
+            /^7\.[012]/ => '7',
+            default     => regsubst($::operatingsystemrelease, '^7\.(\d+).*$', '7_\1'),
+          },
+          default => $::operatingsystemmajrelease,
         }
 
-        yumrepo {
-          default:
-            enabled         => Integer(false),
-            metadata_expire => '7d',
-            gpgcheck        => Integer(true),
-            gpgkey          => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
-            require         => File['/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux'],
-            ;
+        Yumrepo {
+          ensure          => present,
+          metadata_expire => '7d',
+          gpgcheck        => 1,
+          gpgkey          => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
+          require         => File['/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux'],
+          before          => Package[$::zfs::package_name],
+        }
 
-          'zfs-dkms':
-            enabled => Integer($::zfs::kmod_type == 'dkms' and !$::zfs::use_testing),
-            descr   => "ZFS on Linux for ${os_version} - dkms",
-            baseurl => "http://download.zfsonlinux.org/epel/${os_version}/\$basearch/",
-            ;
+        yumrepo { 'zfs':
+          baseurl => "${baseurl}/epel/${release}/\$basearch/",
+          descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - dkms",
+          enabled => Integer($::zfs::kmod_type == 'dkms'),
+        }
 
-          'zfs-kmod':
-            enabled => Integer($::zfs::kmod_type == 'kmod' and !$::zfs::use_testing),
-            descr   => "ZFS on Linux for ${os_version} - kmod",
-            baseurl => "http://download.zfsonlinux.org/epel/${os_version}/kmod/\$basearch/",
-            ;
+        yumrepo { 'zfs-kmod':
+          baseurl => "${baseurl}/epel/${release}/kmod/\$basearch/",
+          descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - kmod",
+          enabled => Integer($::zfs::kmod_type == 'kmod'),
+        }
 
-          'zfs-source':
-            enabled => Integer($::zfs::enable_source_repos and !$::zfs::use_testing),
-            descr   => "ZFS on Linux for ${os_version} - source",
-            baseurl => "http://download.zfsonlinux.org/epel/${os_version}/SRPMS/",
-            ;
+        yumrepo { 'zfs-source':
+          baseurl => "${baseurl}/epel/${release}/SRPMS/",
+          descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - Source",
+          enabled => 0,
+        }
 
-          'zfs-testing-dkms':
-            enabled => Integer($::zfs::kmod_type == 'dkms' and $::zfs::use_testing),
-            descr   => "ZFS on Linux for ${os_version} - dkms - testing",
-            baseurl => "http://download.zfsonlinux.org/epel-testing/${os_version}/\$basearch/",
-            ;
+        yumrepo { 'zfs-testing':
+          baseurl => "${baseurl}/epel-testing/${release}/\$basearch/",
+          descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - dkms - Testing",
+          enabled => 0,
+        }
 
-          'zfs-testing-kmod':
-            enabled => Integer($::zfs::kmod_type == 'kmod' and $::zfs::use_testing),
-            descr   => "ZFS on Linux for ${os_version} - kmod - testing",
-            baseurl => "http://download.zfsonlinux.org/epel-testing/${os_version}/kmod/\$basearch/",
-            ;
+        yumrepo { 'zfs-testing-kmod':
+          baseurl => "${baseurl}/epel-testing/${release}/kmod/\$basearch/",
+          descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - kmod - Testing",
+          enabled => 0,
+        }
 
-          'zfs-testing-source':
-            enabled => Integer($::zfs::enable_source_repos and $::zfs::use_testing),
-            descr   => "ZFS on Linux for ${os_version} - source - testing",
-            baseurl => "http://download.zfsonlinux.org/epel-testing/${os_version}/SRPMS/",
-            ;
+        yumrepo { 'zfs-testing-source':
+          baseurl => "${baseurl}/epel-testing/${release}/SRPMS/",
+          descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - Testing Source",
+          enabled => 0,
         }
       }
       'Debian': {
