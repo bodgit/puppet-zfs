@@ -4,63 +4,66 @@ class zfs::install {
   if $::zfs::manage_repo {
     case $::osfamily {
       'RedHat': {
+        file { '/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux':
+          ensure  => file,
+          owner   => 0,
+          group   => 0,
+          mode    => '0644',
+          content => file("${module_name}/RPM-GPG-KEY-zfsonlinux"),
+        }
 
-        $_source = $::operatingsystemmajrelease ? {
-          # When 7.5 appears, this logic may need tweaking
+        $baseurl = 'http://download.zfsonlinux.org'
+        $release = $::operatingsystemmajrelease ? {
           '7'     => $::operatingsystemrelease ? {
-            # RHEL release is 7.x, CentOS release is 7.x.YYMM
-            /^7\.[012]/ => "http://download.zfsonlinux.org/epel/zfs-release.el${::operatingsystemmajrelease}.noarch.rpm",
-            default     => "http://download.zfsonlinux.org/epel/zfs-release.el${regsubst($::operatingsystemrelease, '^7\.(\d).*$', '7_\1')}.noarch.rpm",
+            /^7\.[012]/ => '7',
+            default     => regsubst($::operatingsystemrelease, '^7\.(\d+).*$', '7_\1'),
           },
-          default => "http://download.zfsonlinux.org/epel/zfs-release.el${::operatingsystemmajrelease}.noarch.rpm",
+          default => $::operatingsystemmajrelease,
         }
 
-        package { 'zfs-release':
-          ensure   => present,
-          provider => rpm,
-          source   => $_source,
+        Yumrepo {
+          ensure          => present,
+          metadata_expire => '7d',
+          gpgcheck        => 1,
+          gpgkey          => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
+          require         => File['/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux'],
+          before          => Package[$::zfs::package_name],
         }
 
-        augeas { '/etc/yum.repos.d/zfs.repo/zfs/enabled':
-          context => '/files/etc/yum.repos.d/zfs.repo/zfs',
-          require => Package['zfs-release'],
-          before  => Package[$::zfs::package_name],
+        yumrepo { 'zfs':
+          baseurl => "${baseurl}/epel/${release}/\$basearch/",
+          descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - dkms",
+          enabled => Integer($::zfs::kmod_type == 'dkms'),
         }
 
-        augeas { '/etc/yum.repos.d/zfs.repo/zfs-kmod/enabled':
-          context => '/files/etc/yum.repos.d/zfs.repo/zfs-kmod',
-          require => Package['zfs-release'],
-          before  => Package[$::zfs::package_name],
+        yumrepo { 'zfs-kmod':
+          baseurl => "${baseurl}/epel/${release}/kmod/\$basearch/",
+          descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - kmod",
+          enabled => Integer($::zfs::kmod_type == 'kmod'),
         }
 
-        case $::zfs::kmod_type {
-          'dkms': {
-            Augeas['/etc/yum.repos.d/zfs.repo/zfs/enabled'] {
-              changes => [
-                'set enabled 1',
-              ],
-            }
-            Augeas['/etc/yum.repos.d/zfs.repo/zfs-kmod/enabled'] {
-              changes => [
-                'set enabled 0',
-              ],
-            }
-          }
-          'kabi': {
-            Augeas['/etc/yum.repos.d/zfs.repo/zfs/enabled'] {
-              changes => [
-                'set enabled 0',
-              ],
-            }
-            Augeas['/etc/yum.repos.d/zfs.repo/zfs-kmod/enabled'] {
-              changes => [
-                'set enabled 1',
-              ],
-            }
-          }
-          default: {
-            # noop
-          }
+        yumrepo { 'zfs-source':
+          baseurl => "${baseurl}/epel/${release}/SRPMS/",
+          descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - Source",
+          enabled => 0,
+        }
+
+        yumrepo { 'zfs-testing':
+          baseurl => "${baseurl}/epel-testing/${release}/\$basearch/",
+          descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - dkms - Testing",
+          enabled => 0,
+        }
+
+        yumrepo { 'zfs-testing-kmod':
+          baseurl => "${baseurl}/epel-testing/${release}/kmod/\$basearch/",
+          descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - kmod - Testing",
+          enabled => 0,
+        }
+
+        yumrepo { 'zfs-testing-source':
+          baseurl => "${baseurl}/epel-testing/${release}/SRPMS/",
+          descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - Testing Source",
+          enabled => 0,
         }
       }
       'Debian': {
@@ -91,6 +94,7 @@ class zfs::install {
       case $::zfs::kmod_type {
         'dkms': {
           ensure_packages(['kernel-devel'], {
+            ensure => $::kernelrelease,
             before => Package[$::zfs::package_name],
           })
         }

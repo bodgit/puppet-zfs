@@ -1,11 +1,11 @@
 # @!visibility private
 class zfs::params {
 
-  $conf_dir         = '/etc/zfs'
-  $kmod_type        = 'dkms'
-  $service_manage   = true
-  $zed_conf_dir     = "${conf_dir}/zed.d"
-  $zedlets          = {
+  $conf_dir       = '/etc/zfs'
+  $kmod_type      = 'dkms'
+  $service_manage = true
+  $zed_conf_dir   = "${conf_dir}/zed.d"
+  $zedlets        = {
     'all-syslog.sh'             => {},
     'checksum-notify.sh'        => {},
     'checksum-spare.sh'         => {},

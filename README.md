@@ -39,8 +39,9 @@ accomplish this. This means kernel headers, toolchains, etc. will be installed.
 
 You will need pluginsync enabled. On RHEL/CentOS platforms you will need to
 have access to the EPEL repository by using
-[stahnma/epel](https://forge.puppet.com/stahnma/epel) or by other means. On
-Debian 8 you will need to enable backports using
+[stahnma/epel](https://forge.puppet.com/stahnma/epel) or by other means to
+use the DKMS-style kernel modules. On Debian 8 you will need to enable
+backports using
 [puppetlabs/apt](https://forge.puppet.com/puppetlabs/apt) with something like:
 
 ```puppet
@@ -79,13 +80,10 @@ For example on RHEL/CentOS to instead install the kABI-tracking kernel modules
 and tune the ARC, you can do:
 
 ```puppet
-include ::epel
-
 class { '::zfs':
   kmod_type   => 'kabi',
   zfs_arc_max => to_bytes('256 M'),
   zfs_arc_min => to_bytes('128 M'),
-  require     => Class['::epel'],
 }
 ```
 

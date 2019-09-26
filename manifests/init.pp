@@ -22,13 +22,13 @@
 # @see puppet_classes::zfs::zed ::zfs::zed
 # @see puppet_defined_types::zfs::scrub ::zfs::scrub
 class zfs (
-  Stdlib::Absolutepath              $conf_dir       = $::zfs::params::conf_dir,
-  Enum['dkms', 'kabi']              $kmod_type      = $::zfs::params::kmod_type,
-  Boolean                           $manage_repo    = $::zfs::params::manage_repo,
-  Variant[String, Array[String, 1]] $package_name   = $::zfs::params::zfs_package_name,
-  Boolean                           $service_manage = $::zfs::params::service_manage,
-  Optional[Integer[0]]              $zfs_arc_max    = undef,
-  Optional[Integer[0]]              $zfs_arc_min    = undef,
+  Stdlib::Absolutepath              $conf_dir            = $::zfs::params::conf_dir,
+  Enum['dkms', 'kabi']              $kmod_type           = $::zfs::params::kmod_type,
+  Boolean                           $manage_repo         = $::zfs::params::manage_repo,
+  Variant[String, Array[String, 1]] $package_name        = $::zfs::params::zfs_package_name,
+  Boolean                           $service_manage      = $::zfs::params::service_manage,
+  Optional[Integer[0]]              $zfs_arc_max         = undef,
+  Optional[Integer[0]]              $zfs_arc_min         = undef,
 ) inherits ::zfs::params {
 
   contain ::zfs::install
