@@ -69,8 +69,9 @@ describe 'zfs' do
                 }
                 default: {
                   $snapshot = $::kernelrelease ? {
-                    /^4\.9\.0-9-/ => '20190601T035633Z',
-                    default       => undef,
+                    /^4\.9\.0-9-/  => '20190601T035633Z',
+                    /^4\.19\.0-5-/ => '20190701T031013Z',
+                    default        => undef,
                   }
 
                   if $snapshot {

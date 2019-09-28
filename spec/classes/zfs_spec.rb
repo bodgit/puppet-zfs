@@ -99,6 +99,8 @@ describe 'zfs' do
           it { is_expected.to contain_file('/etc/systemd/system/zfs-import-cache.service.d') }
           it { is_expected.to contain_file('/etc/systemd/system/zfs-import-scan.service.d/override.conf') }
           it { is_expected.to contain_file('/etc/systemd/system/zfs-import-scan.service.d') }
+          it { is_expected.to contain_file('/etc/systemd/system/zfs-mount.service.d/override.conf') }
+          it { is_expected.to contain_file('/etc/systemd/system/zfs-mount.service.d') }
           it { is_expected.to contain_service('zfs-import-cache').with_ensure('stopped') }
           it { is_expected.to contain_service('zfs-import-scan').with_ensure('running') }
         end

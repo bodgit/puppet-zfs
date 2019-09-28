@@ -109,7 +109,7 @@ The module has been tested on:
 
 * RedHat Enterprise Linux 6/7/8
 * Ubuntu 16.04, 18.04
-* Debian 8, 9
+* Debian 8/9/10
 
 It should also work on Ubuntu 12.04/14.04 however the quality of some aspects
 of the packages make it difficult for the module to work properly.
