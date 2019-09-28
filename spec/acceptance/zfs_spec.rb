@@ -51,24 +51,50 @@ describe 'zfs' do
               | EOS
           }
 
+          ::apt::setting { 'conf-validity':
+            content => @(EOS/L),
+              Acquire::Check-Valid-Until "false";
+              | EOS
+          }
+
           case $::operatingsystem {
             'Debian': {
               case $::operatingsystemmajrelease {
                 '8': {
-                  ::apt::setting { 'conf-validity':
-                    content => @(EOS/L),
-                      Acquire::Check-Valid-Until "false";
-                      | EOS
-                  }
-
                   class { '::apt::backports':
                     location => 'http://archive.debian.org/debian',
                     pin      => 500,
-                    require  => ::Apt::Setting['conf-validity'],
                     before   => Class['::zfs'],
                   }
                 }
                 default: {
+                  $snapshot = $::kernelrelease ? {
+                    /^4\.9\.0-9-/ => '20190601T035633Z',
+                    default       => undef,
+                  }
+
+                  if $snapshot {
+                    ::apt::source { 'snapshot':
+                      location => "https://snapshot.debian.org/archive/debian/${snapshot}",
+                      repos    => 'main',
+                      before   => Class['::zfs'],
+                    }
+
+                    ::apt::source { 'updates':
+                      location => "https://snapshot.debian.org/archive/debian/${snapshot}",
+                      release  => "${::lsbdistcodename}-updates",
+                      repos    => 'main',
+                      before   => Class['::zfs'],
+                    }
+
+                    ::apt::source { 'security':
+                      location => "https://snapshot.debian.org/archive/debian-security/${snapshot}",
+                      release  => "${::lsbdistcodename}/updates",
+                      repos    => 'main',
+                      before   => Class['::zfs'],
+                    }
+                  }
+
                   ::apt::source { 'contrib':
                     location => 'http://deb.debian.org/debian',
                     repos    => 'contrib',
