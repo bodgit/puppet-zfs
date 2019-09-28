@@ -108,7 +108,7 @@ This module has been built on and tested against Puppet 4.4.0 and higher.
 The module has been tested on:
 
 * RedHat Enterprise Linux 6/7
-* Ubuntu 16.04
+* Ubuntu 16.04, 18.04
 * Debian 8, 9
 
 It should also work on Ubuntu 12.04/14.04 however the quality of some aspects
