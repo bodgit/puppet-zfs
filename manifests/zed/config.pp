@@ -55,10 +55,19 @@ class zfs::zed::config {
                 content => file("${module_name}/zed-functions.sh"),
               }
             }
-            default: {
+            '16.04': {
               # 16.04 native package has this located in installed zedlets
               # directory so symlink it in and treat it like a regular zedlet
               ::zfs::zed::zedlet { 'zed-functions.sh': }
+            }
+            default: {
+              # Prevent it from being purged away
+              file { "${conf_dir}/zed-functions.sh":
+                ensure => file,
+                owner  => 0,
+                group  => 0,
+                mode   => '0644',
+              }
             }
           }
         }

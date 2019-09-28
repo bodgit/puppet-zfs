@@ -59,7 +59,6 @@ describe 'zfs' do
             it { should_not contain_service('zfs-mount') }
             it { should_not contain_service('zfs-share') }
           else
-            it { is_expected.to contain_package('zfs-dkms') }
             it { is_expected.to contain_package('zfsutils-linux') }
             it { is_expected.to contain_service('zfs-import-cache').with_ensure('stopped') }
             it { is_expected.to contain_service('zfs-import-scan').with_ensure('running') }

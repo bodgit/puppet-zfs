@@ -248,6 +248,7 @@ describe 'zfs' do
   # Check zed noticed and sent the scrub events to syslog
   describe file(logfile) do
     it { should be_file }
+    its(:content) { should_not match /zed (?: \[\d+\] )? : \s Failed \s to \s stat \s/x }
     its(:content) { should match /zed (?: \[\d+\] )? : \s eid=\d+ \s class=scrub.start \s (?: pool=test | pool_guid=0x[0-9A-F]+ )/x }
     its(:content) { should match /zed (?: \[\d+\] )? : \s eid=\d+ \s class=scrub.finish \s (?: pool=test | pool_guid=0x[0-9A-F]+ )/x }
   end

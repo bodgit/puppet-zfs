@@ -37,19 +37,6 @@ describe 'zfs::zed' do
         it { is_expected.to contain_file('/etc/zfs/zed.d') }
         it { is_expected.to contain_file('/etc/zfs/zed.d/zed.rc') }
         it { is_expected.to contain_file('/etc/zfs/zed.d/zed-functions.sh') }
-        [
-          'all-syslog.sh',
-          'checksum-notify.sh',
-          'checksum-spare.sh',
-          'data-notify.sh',
-          'io-notify.sh',
-          'io-spare.sh',
-          'resilver.finish-notify.sh',
-          'scrub.finish-notify.sh',
-        ].each do |x|
-          it { is_expected.to contain_file("/etc/zfs/zed.d/#{x}") }
-          it { is_expected.to contain_zfs__zed__zedlet(x) }
-        end
 
         case facts[:osfamily]
         when 'Debian'
@@ -63,13 +50,67 @@ describe 'zfs::zed' do
             it { is_expected.to contain_service('zed') }
             case facts[:operatingsystemrelease]
             when '12.04', '14.04'
-            else
+              [
+                'all-syslog.sh',
+                'checksum-notify.sh',
+                'checksum-spare.sh',
+                'data-notify.sh',
+                'io-notify.sh',
+                'io-spare.sh',
+                'resilver.finish-notify.sh',
+                'scrub.finish-notify.sh',
+              ].each do |x|
+                it { is_expected.to contain_file("/etc/zfs/zed.d/#{x}") }
+                it { is_expected.to contain_zfs__zed__zedlet(x) }
+              end
+            when '16.04'
+              [
+                'all-syslog.sh',
+                'checksum-notify.sh',
+                'checksum-spare.sh',
+                'data-notify.sh',
+                'io-notify.sh',
+                'io-spare.sh',
+                'resilver.finish-notify.sh',
+                'scrub.finish-notify.sh',
+              ].each do |x|
+                it { is_expected.to contain_file("/etc/zfs/zed.d/#{x}") }
+                it { is_expected.to contain_zfs__zed__zedlet(x) }
+              end
               it { is_expected.to contain_zfs__zed__zedlet('zed-functions.sh') }
+            else
+              [
+                'all-syslog.sh',
+                'data-notify.sh',
+                'pool_import-led.sh',
+                'resilver_finish-notify.sh',
+                'scrub_finish-notify.sh',
+                'statechange-led.sh',
+                'statechange-notify.sh',
+                'vdev_attach-led.sh',
+                'vdev_clear-led.sh',
+              ].each do |x|
+                it { is_expected.to contain_file("/etc/zfs/zed.d/#{x}") }
+                it { is_expected.to contain_zfs__zed__zedlet(x) }
+              end
             end
           else
             it { is_expected.to contain_exec('systemctl daemon-reload') }
             it { is_expected.to contain_file('/etc/systemd/system/zfs-zed.service.d') }
             it { is_expected.to contain_file('/etc/systemd/system/zfs-zed.service.d/override.conf') }
+            [
+              'all-syslog.sh',
+              'checksum-notify.sh',
+              'checksum-spare.sh',
+              'data-notify.sh',
+              'io-notify.sh',
+              'io-spare.sh',
+              'resilver.finish-notify.sh',
+              'scrub.finish-notify.sh',
+            ].each do |x|
+              it { is_expected.to contain_file("/etc/zfs/zed.d/#{x}") }
+              it { is_expected.to contain_zfs__zed__zedlet(x) }
+            end
             it { is_expected.to contain_service('zfs-zed') }
           end
 
@@ -80,6 +121,19 @@ describe 'zfs::zed' do
             'include ::zfs'
           end
 
+          [
+            'all-syslog.sh',
+            'checksum-notify.sh',
+            'checksum-spare.sh',
+            'data-notify.sh',
+            'io-notify.sh',
+            'io-spare.sh',
+            'resilver.finish-notify.sh',
+            'scrub.finish-notify.sh',
+          ].each do |x|
+            it { is_expected.to contain_file("/etc/zfs/zed.d/#{x}") }
+            it { is_expected.to contain_zfs__zed__zedlet(x) }
+          end
           it { is_expected.to contain_service('zfs-zed') }
         end
       end
