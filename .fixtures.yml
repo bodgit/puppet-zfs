@@ -12,6 +12,9 @@ fixtures:
       repo: "camptocamp/kmod"
       ref: "2.0.0"
     augeas_core:
+      repo: "puppetlabs/augeas_core"
+      ref: "1.0.1"
+    yumrepo_core:
       repo: "puppetlabs/yumrepo_core"
       ref: "1.0.2"
     cron_core:
