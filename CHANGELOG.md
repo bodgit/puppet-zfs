@@ -1,5 +1,23 @@
 # Change Log
 
+## [v2.2.5](https://github.com/bodgit/puppet-zfs/tree/v2.2.5) (2019-09-28)
+[Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.2.4...v2.2.5)
+
+**Implemented enhancements:**
+
+- Add support for Ubuntu 18.04 [\#18](https://github.com/bodgit/puppet-zfs/issues/18)
+- Manage ZFS Yum repos directly [\#8](https://github.com/bodgit/puppet-zfs/issues/8)
+- Manage ZFS YUM repo and RPM GPG key [\#15](https://github.com/bodgit/puppet-zfs/pull/15) ([runejuhl](https://github.com/runejuhl))
+- Install linux headers meta package on Debian [\#14](https://github.com/bodgit/puppet-zfs/pull/14) ([sergiik](https://github.com/sergiik))
+
+**Fixed bugs:**
+
+- Acceptance tests broken on Debian 8 [\#20](https://github.com/bodgit/puppet-zfs/issues/20)
+
+**Merged pull requests:**
+
+- Drop librarian and install fixtures manually [\#19](https://github.com/bodgit/puppet-zfs/pull/19) ([bodgit](https://github.com/bodgit))
+
 ## [v2.2.4](https://github.com/bodgit/puppet-zfs/tree/v2.2.4) (2019-08-18)
 [Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.2.3...v2.2.4)
 
