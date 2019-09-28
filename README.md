@@ -5,7 +5,7 @@ Tested with Travis CI
 [![Build Status](https://travis-ci.org/bodgit/puppet-zfs.svg?branch=master)](https://travis-ci.org/bodgit/puppet-zfs)
 [![Coverage Status](https://coveralls.io/repos/bodgit/puppet-zfs/badge.svg?branch=master&service=github)](https://coveralls.io/github/bodgit/puppet-zfs?branch=master)
 [![Puppet Forge](http://img.shields.io/puppetforge/v/bodgit/zfs.svg)](https://forge.puppetlabs.com/bodgit/zfs)
-[![Dependency Status](https://gemnasium.com/bodgit/puppet-zfs.svg)](https://gemnasium.com/bodgit/puppet-zfs)
+[![Puppet Forge](https://img.shields.io/puppetforge/dt/bodgit/zfs)](https://forge.puppetlabs.com/bodgit/zfs)
 
 #### Table of Contents
 
