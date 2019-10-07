@@ -16,7 +16,7 @@ class zfs::install {
         $release = $::operatingsystemmajrelease ? {
           '7'     => $::operatingsystemrelease ? {
             /^7\.[012]/ => '7',
-            default     => regsubst($::operatingsystemrelease, '^7\.(\d+).*$', '7_\1'),
+            default     => regsubst($::operatingsystemrelease, '^7\.(\d+).*$', '7.\1'),
           },
           default => $::operatingsystemmajrelease,
         }
