@@ -1,5 +1,12 @@
 # Change Log
 
+## [v2.2.6](https://github.com/bodgit/puppet-zfs/tree/v2.2.6) (2019-10-07)
+[Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.2.5...v2.2.6)
+
+**Fixed bugs:**
+
+- Centos 7.7 wrong ZFS repository configuration [\#25](https://github.com/bodgit/puppet-zfs/issues/25)
+
 ## [v2.2.5](https://github.com/bodgit/puppet-zfs/tree/v2.2.5) (2019-09-28)
 [Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.2.4...v2.2.5)
 
