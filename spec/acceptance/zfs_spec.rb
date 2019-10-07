@@ -111,6 +111,26 @@ describe 'zfs' do
         'RedHat': {
           include ::epel
 
+          if $::operatingsystemmajrelease == '7' {
+            yumrepo { 'C7.6.1810-base':
+              baseurl  => 'http://vault.centos.org/7.6.1810/os/$basearch/',
+              descr    => 'CentOS-7.6.1810 - Base',
+              enabled  => 1,
+              gpgcheck => 1,
+              gpgkey   => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7',
+              before   => Class['::zfs'],
+            }
+
+            yumrepo { 'C7.6.1810-updates':
+              baseurl  => 'http://vault.centos.org/7.6.1810/updates/$basearch/',
+              descr    => 'CentOS-7.6.1810 - Updates',
+              enabled  => 1,
+              gpgcheck => 1,
+              gpgkey   => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7',
+              before   => Class['::zfs'],
+            }
+          }
+
           Class['::epel'] -> Class['::zfs']
         }
       }
