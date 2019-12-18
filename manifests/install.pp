@@ -93,8 +93,10 @@ class zfs::install {
     'RedHat': {
       case $::zfs::kmod_type {
         'dkms': {
-          ensure_packages(['kernel-devel'], {
-            ensure => $::kernelrelease,
+          # Puppet doesn't like managing multiple versions of the same package.
+          # By using the version in the name Yum will do the right thing
+          ensure_packages(["kernel-devel-${::kernelrelease}"], {
+            ensure => present,
             before => Package[$::zfs::package_name],
           })
         }

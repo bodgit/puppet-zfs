@@ -77,7 +77,7 @@ describe 'zfs' do
         end
       when 'RedHat'
         it { is_expected.to contain_file('/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux') }
-        it { is_expected.to contain_package('kernel-devel') }
+        it { is_expected.to contain_package("kernel-devel-#{facts[:kernelrelease]}") }
         it { is_expected.to contain_package('zfs') }
         it { is_expected.not_to contain_package('zfs-release') }
         it { is_expected.to contain_service('zfs-mount') }
