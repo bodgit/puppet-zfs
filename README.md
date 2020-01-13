@@ -81,7 +81,7 @@ and tune the ARC, you can do:
 
 ```puppet
 class { '::zfs':
-  kmod_type   => 'kabi',
+  kmod_type   => 'kmod',
   zfs_arc_max => to_bytes('256 M'),
   zfs_arc_min => to_bytes('128 M'),
 }

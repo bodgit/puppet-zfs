@@ -23,7 +23,7 @@
 # @see puppet_defined_types::zfs::scrub ::zfs::scrub
 class zfs (
   Stdlib::Absolutepath              $conf_dir            = $::zfs::params::conf_dir,
-  Enum['dkms', 'kabi']              $kmod_type           = $::zfs::params::kmod_type,
+  Enum['dkms', 'kmod']              $kmod_type           = $::zfs::params::kmod_type,
   Boolean                           $manage_repo         = $::zfs::params::manage_repo,
   Variant[String, Array[String, 1]] $package_name        = $::zfs::params::zfs_package_name,
   Boolean                           $service_manage      = $::zfs::params::service_manage,
