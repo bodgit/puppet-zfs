@@ -13,7 +13,7 @@ end
 
 install_module_on(hosts)
 install_module_dependencies_on(hosts)
-install_module_from_forge_on(hosts, 'stahnma/epel', '>=1.0.0 <2.0.0')
+install_module_from_forge_on(hosts, 'stahnma/epel', '>=2.0.0 <3.0.0')
 
 RSpec.configure do |c|
   c.formatter = :documentation

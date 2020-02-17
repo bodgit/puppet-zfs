@@ -14,11 +14,12 @@ class zfs::install {
 
         $baseurl = 'http://download.zfsonlinux.org'
         $release = $::operatingsystemmajrelease ? {
+          '6'     => '6',
           '7'     => $::operatingsystemrelease ? {
             /^7\.[012]/ => '7',
             default     => regsubst($::operatingsystemrelease, '^7\.(\d+).*$', '7.\1'),
           },
-          default => $::operatingsystemmajrelease,
+          default => regsubst($::operatingsystemrelease, '^(\d\.\d+).*$', '\1'),
         }
 
         Yumrepo {
@@ -114,6 +115,47 @@ class zfs::install {
           ensure_packages(["linux-headers-${::kernelrelease}", "linux-headers-${::architecture}"], {
             before => Package[$::zfs::package_name],
           })
+        }
+      }
+    }
+    default: {
+      # noop
+    }
+  }
+
+  # For some unbeknownst reason, the latest ZFS systemd units do not modprobe
+  # the zfs module anymore which breaks installs on machines with no existing
+  # ZFS pools, so put it back again. It needs to be done here rather than
+  # config.pp so they're present before the package is installed on Debian due
+  # to their questionable behaviour of starting services immediately
+  case $::service_provider {
+    'systemd': {
+      exec { 'zfs systemctl daemon-reload':
+        command     => 'systemctl daemon-reload',
+        refreshonly => true,
+        path        => $::path,
+      }
+
+      Exec['zfs systemctl daemon-reload'] -> Package[$::zfs::package_name]
+
+      ['zfs-import-cache', 'zfs-import-scan'].each |$service| {
+        file { "/etc/systemd/system/${service}.service.d":
+          ensure => directory,
+          owner  => 0,
+          group  => 0,
+          mode   => '0644',
+        }
+
+        file { "/etc/systemd/system/${service}.service.d/override.conf":
+          ensure  => file,
+          owner   => 0,
+          group   => 0,
+          mode    => '0644',
+          content => @(EOS/L),
+            [Service]
+            ExecStartPre=-/sbin/modprobe zfs
+            | EOS
+          notify  => Exec['zfs systemctl daemon-reload'],
         }
       }
     }

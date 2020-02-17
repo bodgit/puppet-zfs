@@ -111,23 +111,40 @@ describe 'zfs' do
         'RedHat': {
           include ::epel
 
-          if $::operatingsystemmajrelease == '7' {
-            yumrepo { 'C7.6.1810-base':
-              baseurl  => 'http://vault.centos.org/7.6.1810/os/$basearch/',
-              descr    => 'CentOS-7.6.1810 - Base',
-              enabled  => 1,
-              gpgcheck => 1,
-              gpgkey   => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7',
-              before   => Class['::zfs'],
-            }
+          case $::operatingsystem {
+            'CentOS': {
+              case $::operatingsystemmajrelease {
+                '7': {
+                  yumrepo { 'C7.6.1810-base':
+                    baseurl  => 'http://vault.centos.org/7.6.1810/os/$basearch/',
+                    descr    => 'CentOS-7.6.1810 - Base',
+                    enabled  => 1,
+                    gpgcheck => 1,
+                    gpgkey   => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7',
+                    before   => Class['::zfs'],
+                  }
 
-            yumrepo { 'C7.6.1810-updates':
-              baseurl  => 'http://vault.centos.org/7.6.1810/updates/$basearch/',
-              descr    => 'CentOS-7.6.1810 - Updates',
-              enabled  => 1,
-              gpgcheck => 1,
-              gpgkey   => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7',
-              before   => Class['::zfs'],
+                  yumrepo { 'C7.6.1810-updates':
+                    baseurl  => 'http://vault.centos.org/7.6.1810/updates/$basearch/',
+                    descr    => 'CentOS-7.6.1810 - Updates',
+                    enabled  => 1,
+                    gpgcheck => 1,
+                    gpgkey   => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7',
+                    before   => Class['::zfs'],
+                  }
+                }
+                '8': {
+                  yumrepo { 'C8.0.1905-BaseOS':
+                    ensure   => present,
+                    baseurl  => 'http://mirror.centos.org/centos/8.0.1905/BaseOS/x86_64/os/',
+                    descr    => 'CentOS-8.0.1905 - BaseOS',
+                    enabled  => 1,
+                    gpgcheck => 1,
+                    gpgkey   => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial',
+                    before   => Class['::zfs'],
+                  }
+                }
+              }
             }
           }
 
