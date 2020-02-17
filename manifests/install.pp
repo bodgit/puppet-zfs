@@ -40,7 +40,7 @@ class zfs::install {
         yumrepo { 'zfs-kmod':
           baseurl => "${baseurl}/epel/${release}/kmod/\$basearch/",
           descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - kmod",
-          enabled => Integer($::zfs::kmod_type == 'kmod'),
+          enabled => Integer($::zfs::kmod_type == 'kabi'),
         }
 
         yumrepo { 'zfs-source':
