@@ -138,7 +138,8 @@ class zfs::install {
 
       Exec['zfs systemctl daemon-reload'] -> Package[$::zfs::package_name]
 
-      ['zfs-import-cache', 'zfs-import-scan'].each |$service| {
+      # The last one is for Debian 10 only
+      ['zfs-import-cache', 'zfs-import-scan', 'zfs-mount'].each |$service| {
         file { "/etc/systemd/system/${service}.service.d":
           ensure => directory,
           owner  => 0,

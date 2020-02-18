@@ -98,18 +98,37 @@ describe 'zfs::zed' do
             it { is_expected.to contain_exec('systemctl daemon-reload') }
             it { is_expected.to contain_file('/etc/systemd/system/zfs-zed.service.d') }
             it { is_expected.to contain_file('/etc/systemd/system/zfs-zed.service.d/override.conf') }
-            [
-              'all-syslog.sh',
-              'checksum-notify.sh',
-              'checksum-spare.sh',
-              'data-notify.sh',
-              'io-notify.sh',
-              'io-spare.sh',
-              'resilver.finish-notify.sh',
-              'scrub.finish-notify.sh',
-            ].each do |x|
-              it { is_expected.to contain_file("/etc/zfs/zed.d/#{x}") }
-              it { is_expected.to contain_zfs__zed__zedlet(x) }
+            case facts[:operatingsystemmajrelease]
+            when '8', '9'
+              [
+                'all-syslog.sh',
+                'checksum-notify.sh',
+                'checksum-spare.sh',
+                'data-notify.sh',
+                'io-notify.sh',
+                'io-spare.sh',
+                'resilver.finish-notify.sh',
+                'scrub.finish-notify.sh',
+              ].each do |x|
+                it { is_expected.to contain_file("/etc/zfs/zed.d/#{x}") }
+                it { is_expected.to contain_zfs__zed__zedlet(x) }
+              end
+            else
+              [
+                'all-syslog.sh',
+                'data-notify.sh',
+                'pool_import-led.sh',
+                'resilver_finish-notify.sh',
+                'resilver_finish-start-scrub.sh',
+                'scrub_finish-notify.sh',
+                'statechange-led.sh',
+                'statechange-notify.sh',
+                'vdev_attach-led.sh',
+                'vdev_clear-led.sh',
+              ].each do |x|
+                it { is_expected.to contain_file("/etc/zfs/zed.d/#{x}") }
+                it { is_expected.to contain_zfs__zed__zedlet(x) }
+              end
             end
             it { is_expected.to contain_service('zfs-zed') }
           end
