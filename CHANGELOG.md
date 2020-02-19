@@ -1,5 +1,23 @@
 # Changelog
 
+## [v2.2.8](https://github.com/bodgit/puppet-zfs/tree/v2.2.8) (2020-02-19)
+
+[Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.2.7...v2.2.8)
+
+**Implemented enhancements:**
+
+- Add support for Debian 10 [\#21](https://github.com/bodgit/puppet-zfs/issues/21)
+- EL8 Support [\#13](https://github.com/bodgit/puppet-zfs/issues/13)
+
+**Closed issues:**
+
+- ZFS init fails on Centos due to not loaded module [\#30](https://github.com/bodgit/puppet-zfs/issues/30)
+- ZFS init fails on Centos due to not loaded module [\#29](https://github.com/bodgit/puppet-zfs/issues/29)
+
+**Merged pull requests:**
+
+- Preliminary Debian 10 support [\#24](https://github.com/bodgit/puppet-zfs/pull/24) ([bodgit](https://github.com/bodgit))
+
 ## [v2.2.7](https://github.com/bodgit/puppet-zfs/tree/v2.2.7) (2019-12-19)
 
 [Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.2.6...v2.2.7)
