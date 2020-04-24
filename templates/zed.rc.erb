@@ -30,7 +30,7 @@ ZED_PUSHBULLET_CHANNEL_TAG="<%= @pushbullet_channel_tag %>"
 ZED_RUNDIR="<%= @run_dir %>"
 <% end -%>
 <% unless @use_enclosure_leds.nil? -%>
-ZED_USE_ENCLOSURE_LEDS="<%= @use_enclosure_leds ? 1 : 0 %>"
+ZED_USE_ENCLOSURE_LEDS=<%= @use_enclosure_leds ? 1 : 0 %>
 <% end -%>
 <% if @spare_on_checksum_errors -%>
 ZED_SPARE_ON_CHECKSUM_ERRORS=<%= @spare_on_checksum_errors %>
