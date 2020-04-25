@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.2.9](https://github.com/bodgit/puppet-zfs/tree/v2.2.9) (2020-04-25)
+
+[Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.2.8...v2.2.9)
+
+**Fixed bugs:**
+
+- Remove extra quotes [\#31](https://github.com/bodgit/puppet-zfs/pull/31) ([wmoore28](https://github.com/wmoore28))
+
 ## [v2.2.8](https://github.com/bodgit/puppet-zfs/tree/v2.2.8) (2020-02-19)
 
 [Full Changelog](https://github.com/bodgit/puppet-zfs/compare/v2.2.7...v2.2.8)
