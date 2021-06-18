@@ -7,6 +7,24 @@
   "source": "https://github.com/bodgit/puppet-zfs",
   "project_page": "https://github.com/bodgit/puppet-zfs",
   "issues_url": "https://github.com/bodgit/puppet-zfs/issues",
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">=4.13.0 <7.0.0"
+    },
+    {
+      "name": "camptocamp/kmod",
+      "version_requirement": ">=2.0.0 <3.0.0"
+    },
+    {
+      "name": "puppetlabs/yumrepo_core",
+      "version_requirement": ">=1.0.2 <2.0.0"
+    },
+    {
+      "name": "puppetlabs/cron_core",
+      "version_requirement": ">=1.0.0 <2.0.0"
+    }
+  ],
   "operatingsystem_support": [
     {
       "operatingsystem": "RedHat",
@@ -65,22 +83,7 @@
     "zpool",
     "zed"
   ],
-  "dependencies": [
-    {
-      "name": "puppetlabs/stdlib",
-      "version_requirement": ">=4.13.0 <7.0.0"
-    },
-    {
-      "name": "camptocamp/kmod",
-      "version_requirement": ">=2.0.0 <3.0.0"
-    },
-    {
-      "name": "puppetlabs/yumrepo_core",
-      "version_requirement": ">=1.0.2 <2.0.0"
-    },
-    {
-      "name": "puppetlabs/cron_core",
-      "version_requirement": ">=1.0.0 <2.0.0"
-    }
-  ]
+  "pdk-version": "2.1.0",
+  "template-url": "https://github.com/bodgit/pdk-templates#bodgit",
+  "template-ref": "remotes/origin/bodgit-0-g022387a"
 }
