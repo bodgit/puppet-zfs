@@ -28,13 +28,13 @@ describe 'zfs::zed::zedlet' do
         when 'Debian'
 
           let(:pre_condition) do
-            'include ::apt include ::zfs include ::zfs::zed'
+            'include ::zfs include ::zfs::zed'
           end
 
           case facts[:operatingsystem]
           when 'Ubuntu'
             case facts[:operatingsystemrelease]
-            when '12.04', '14.04', '16.04'
+            when '16.04'
               it { is_expected.to contain_file('/etc/zfs/zed.d/test.sh').with_target('/usr/lib/zfs-linux/zfs/zed.d/test.sh') }
             else
               it { is_expected.to contain_file('/etc/zfs/zed.d/test.sh').with_target('/usr/lib/x86_64-linux-gnu/zfs/zed.d/test.sh') }

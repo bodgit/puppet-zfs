@@ -28,31 +28,27 @@
       "operatingsystem": "OracleLinux",
       "operatingsystemrelease": [
         "6",
-        "7",
-        "8"
+        "7"
       ]
     },
     {
       "operatingsystem": "Scientific",
       "operatingsystemrelease": [
         "6",
-        "7",
-        "8"
+        "7"
       ]
     },
     {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
-        "12.04",
-        "14.04",
         "16.04",
-        "18.04"
+        "18.04",
+        "20.04"
       ]
     },
     {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
-        "8",
         "9",
         "10"
       ]
@@ -73,10 +69,6 @@
     {
       "name": "puppetlabs/stdlib",
       "version_requirement": ">=4.13.0 <7.0.0"
-    },
-    {
-      "name": "puppetlabs/apt",
-      "version_requirement": ">=2.2.0 <8.0.0"
     },
     {
       "name": "camptocamp/kmod",

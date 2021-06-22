@@ -67,21 +67,6 @@ class zfs::install {
           enabled => 0,
         }
       }
-      'Debian': {
-        case $::operatingsystem {
-          'Ubuntu': {
-            ensure_packages(['python-software-properties'])
-
-            ::apt::ppa { 'ppa:zfs-native/stable':
-              require => Package['python-software-properties'],
-              before  => Package[$::zfs::package_name],
-            }
-          }
-          default: {
-            # noop
-          }
-        }
-      }
       default: {
         # noop
       }
