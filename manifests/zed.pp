@@ -55,9 +55,7 @@ class zfs::zed (
   Hash[String, Hash]             $zedlets                  = $::zfs::params::zedlets,
 ) inherits ::zfs::params {
 
-  if ! defined(Class['::zfs']) {
-    fail('You must include the zfs base class before using the zfs::zed class')
-  }
+  include zfs
 
   contain ::zfs::zed::install
   contain ::zfs::zed::config

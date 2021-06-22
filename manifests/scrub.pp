@@ -32,9 +32,7 @@ define zfs::scrub (
   String $user     = 'root',
 ) {
 
-  if ! defined(Class['::zfs']) {
-    fail('You must include the zfs base class before using any zfs defined resources')
-  }
+  include zfs
 
   cron { "zpool scrub ${zpool}":
     command     => "zpool scrub ${zpool}",

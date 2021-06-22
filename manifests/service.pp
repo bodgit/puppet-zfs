@@ -73,22 +73,19 @@ class zfs::service {
       }
     }
 
-    # Not Ubuntu 12.04 or 14.04, essentially
-    if $::service_provider == 'systemd' or $::osfamily == 'RedHat' {
-      service { 'zfs-mount':
-        ensure     => running,
-        enable     => true,
-        hasstatus  => true,
-        hasrestart => true,
-        before     => Service['zfs-share'],
-      }
+    service { 'zfs-mount':
+      ensure     => running,
+      enable     => true,
+      hasstatus  => true,
+      hasrestart => true,
+      before     => Service['zfs-share'],
+    }
 
-      service { 'zfs-share':
-        ensure     => running,
-        enable     => true,
-        hasstatus  => true,
-        hasrestart => true,
-      }
+    service { 'zfs-share':
+      ensure     => running,
+      enable     => true,
+      hasstatus  => true,
+      hasrestart => true,
     }
   }
 }

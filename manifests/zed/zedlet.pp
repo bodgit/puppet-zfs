@@ -24,9 +24,7 @@ define zfs::zed::zedlet (
   String           $zedlet  = $title,
 ) {
 
-  if ! defined(Class['::zfs::zed']) {
-    fail('You must include the zfs::zed base class before using any zfs::zed defined resources')
-  }
+  include zfs::zed
 
   # No content, make a symlink to the system
   if ! ($content and $source) {
