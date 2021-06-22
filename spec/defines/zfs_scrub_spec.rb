@@ -39,7 +39,7 @@ describe 'zfs::scrub' do
         when 'Debian'
 
           let(:pre_condition) do
-            'include ::apt include ::zfs'
+            'include ::zfs'
           end
 
         when 'RedHat'

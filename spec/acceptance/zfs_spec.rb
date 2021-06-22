@@ -4,22 +4,14 @@ describe 'zfs' do
   case fact('osfamily')
   when 'Debian'
     logfile = '/var/log/syslog'
+    package = 'zfsutils-linux'
+    systemd = true
     zpool   = '/sbin/zpool'
     zfs     = '/sbin/zfs'
     case fact('operatingsystem')
     when 'Ubuntu'
       zed_service = 'zed'
-      case fact('operatingsystemrelease')
-      when '12.04', '14.04'
-        package = 'ubuntu-zfs'
-        systemd = false
-      else
-        package = 'zfsutils-linux'
-        systemd = true
-      end
     else
-      package     = 'zfsutils-linux'
-      systemd     = true
       zed_service = 'zfs-zed'
     end
   when 'RedHat'
@@ -59,49 +51,38 @@ describe 'zfs' do
 
           case $::operatingsystem {
             'Debian': {
-              case $::operatingsystemmajrelease {
-                '8': {
-                  class { '::apt::backports':
-                    location => 'http://archive.debian.org/debian',
-                    pin      => 500,
-                    before   => Class['::zfs'],
-                  }
+              $snapshot = $::kernelrelease ? {
+                /^4\.9\.0-9-/  => '20190601T035633Z',
+                /^4\.19\.0-5-/ => '20190701T031013Z',
+                default        => undef,
+              }
+
+              if $snapshot {
+                ::apt::source { 'snapshot':
+                  location => "https://snapshot.debian.org/archive/debian/${snapshot}",
+                  repos    => 'main',
+                  before   => Class['::zfs'],
                 }
-                default: {
-                  $snapshot = $::kernelrelease ? {
-                    /^4\.9\.0-9-/  => '20190601T035633Z',
-                    /^4\.19\.0-5-/ => '20190701T031013Z',
-                    default        => undef,
-                  }
 
-                  if $snapshot {
-                    ::apt::source { 'snapshot':
-                      location => "https://snapshot.debian.org/archive/debian/${snapshot}",
-                      repos    => 'main',
-                      before   => Class['::zfs'],
-                    }
-
-                    ::apt::source { 'updates':
-                      location => "https://snapshot.debian.org/archive/debian/${snapshot}",
-                      release  => "${::lsbdistcodename}-updates",
-                      repos    => 'main',
-                      before   => Class['::zfs'],
-                    }
-
-                    ::apt::source { 'security':
-                      location => "https://snapshot.debian.org/archive/debian-security/${snapshot}",
-                      release  => "${::lsbdistcodename}/updates",
-                      repos    => 'main',
-                      before   => Class['::zfs'],
-                    }
-                  }
-
-                  ::apt::source { 'contrib':
-                    location => 'http://deb.debian.org/debian',
-                    repos    => 'contrib',
-                    before   => Class['::zfs'],
-                  }
+                ::apt::source { 'updates':
+                  location => "https://snapshot.debian.org/archive/debian/${snapshot}",
+                  release  => "${::lsbdistcodename}-updates",
+                  repos    => 'main',
+                  before   => Class['::zfs'],
                 }
+
+                ::apt::source { 'security':
+                  location => "https://snapshot.debian.org/archive/debian-security/${snapshot}",
+                  release  => "${::lsbdistcodename}/updates",
+                  repos    => 'main',
+                  before   => Class['::zfs'],
+                }
+              }
+
+              ::apt::source { 'contrib':
+                location => 'http://deb.debian.org/debian',
+                repos    => 'contrib',
+                before   => Class['::zfs'],
               }
             }
             default: {
@@ -211,13 +192,8 @@ describe 'zfs' do
     end
   end
 
-  describe service('zfs-import'), :if => systemd.eql?(false) and fact('osfamily').eql?('RedHat') do
+  describe service('zfs-import'), :if => systemd.eql?(false) do
     it { should be_running }
-    it { should be_enabled }
-  end
-
-  describe service('zpool-import'), :if => systemd.eql?(false) and fact('operatingsystem').eql?('Ubuntu') do
-    it { should be_stopped }
     it { should be_enabled }
   end
 
@@ -227,16 +203,6 @@ describe 'zfs' do
   end
 
   describe service('zfs-import-scan'), :if => systemd.eql?(true) do
-    it { should be_running }
-    it { should be_enabled }
-  end
-
-  describe service('zfs-mount'), :unless => fact('operatingsystem').eql?('Ubuntu') and ['12.04', '14.04'].include?(fact('operatingsystemrelease')) do
-    it { should be_running }
-    it { should be_enabled }
-  end
-
-  describe service('zfs-share'), :unless => fact('operatingsystem').eql?('Ubuntu') and ['12.04', '14.04'].include?(fact('operatingsystemrelease')) do
     it { should be_running }
     it { should be_enabled }
   end
@@ -262,11 +228,7 @@ describe 'zfs' do
   end
 
   (1..3).each do |file|
-    # The Debian 8 image has an ext3 filesystem so fallocate(1) doesn't work
-    describe command("fallocate -l 1G /tmp/file#{file}"), :unless => (fact('operatingsystem').eql?('Debian') and fact('operatingsystemmajrelease').eql?('8')) do
-      its(:exit_status) { should eq 0 }
-    end
-    describe command("dd if=/dev/zero of=/tmp/file#{file} count=1 bs=1G"), :if => (fact('operatingsystem').eql?('Debian') and fact('operatingsystemmajrelease').eql?('8')) do
+    describe command("fallocate -l 1G /tmp/file#{file}") do
       its(:exit_status) { should eq 0 }
     end
   end

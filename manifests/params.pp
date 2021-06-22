@@ -51,21 +51,6 @@ class zfs::params {
           $zed_service_name = 'zed'
 
           case $::operatingsystemrelease {
-            '12.04', '14.04': {
-              $manage_repo      = true
-              $zedlet_dir       = '/usr/lib/zfs-linux/zfs/zed.d'
-              $zedlets          = {
-                'all-syslog.sh'             => {},
-                'checksum-notify.sh'        => {},
-                'checksum-spare.sh'         => {},
-                'data-notify.sh'            => {},
-                'io-notify.sh'              => {},
-                'io-spare.sh'               => {},
-                'resilver.finish-notify.sh' => {},
-                'scrub.finish-notify.sh'    => {},
-              }
-              $zfs_package_name = 'ubuntu-zfs'
-            }
             '16.04': {
               $manage_repo      = false
               $zedlet_dir       = '/usr/lib/zfs-linux/zfs/zed.d'
@@ -109,7 +94,7 @@ class zfs::params {
           ]
 
           case $::operatingsystemmajrelease {
-            '8', '9': {
+            '9': {
               $zedlets = {
                 'all-syslog.sh'             => {},
                 'checksum-notify.sh'        => {},
