@@ -1,8 +1,8 @@
 # @!visibility private
 class zfs::install {
 
-  if $::zfs::manage_repo {
-    case $::osfamily {
+  if $zfs::manage_repo {
+    case $facts['os']['family'] {
       'RedHat': {
         file { '/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux':
           ensure  => file,
@@ -13,13 +13,17 @@ class zfs::install {
         }
 
         $baseurl = 'http://download.zfsonlinux.org'
-        $release = $::operatingsystemmajrelease ? {
+        $release = $facts['os']['release']['major'] ? {
           '6'     => '6',
-          '7'     => $::operatingsystemrelease ? {
+          '7'     => $facts['os']['release']['full'] ? {
             /^7\.[012]/ => '7',
-            default     => regsubst($::operatingsystemrelease, '^7\.(\d+).*$', '7.\1'),
+            default     => regsubst($facts['os']['release']['full'], '^7\.(\d+).*$', '7.\1'),
           },
-          default => regsubst($::operatingsystemrelease, '^(\d\.\d+).*$', '\1'),
+          '8'     => $facts['os']['release']['full'] ? {
+            /^8\.4/ => '8.3',
+            default => regsubst($facts['os']['release']['full'], '^8\.(\d+).*$', '8.\1'),
+          },
+          default => regsubst($facts['os']['release']['full'], '^(\d\.\d+).*$', '\1'),
         }
 
         Yumrepo {
@@ -28,42 +32,42 @@ class zfs::install {
           gpgcheck        => 1,
           gpgkey          => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux',
           require         => File['/etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux'],
-          before          => Package[$::zfs::package_name],
+          before          => Package[$zfs::package_name],
         }
 
         yumrepo { 'zfs':
           baseurl => "${baseurl}/epel/${release}/\$basearch/",
-          descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - dkms",
-          enabled => Integer($::zfs::kmod_type == 'dkms'),
+          descr   => "ZFS on Linux for EL${facts['os']['release']['major']} - dkms",
+          enabled => Integer($zfs::kmod_type == 'dkms'),
         }
 
         yumrepo { 'zfs-kmod':
           baseurl => "${baseurl}/epel/${release}/kmod/\$basearch/",
-          descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - kmod",
-          enabled => Integer($::zfs::kmod_type == 'kabi'),
+          descr   => "ZFS on Linux for EL${facts['os']['release']['major']} - kmod",
+          enabled => Integer($zfs::kmod_type == 'kabi'),
         }
 
         yumrepo { 'zfs-source':
           baseurl => "${baseurl}/epel/${release}/SRPMS/",
-          descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - Source",
+          descr   => "ZFS on Linux for EL${facts['os']['release']['major']} - Source",
           enabled => 0,
         }
 
         yumrepo { 'zfs-testing':
           baseurl => "${baseurl}/epel-testing/${release}/\$basearch/",
-          descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - dkms - Testing",
+          descr   => "ZFS on Linux for EL${facts['os']['release']['major']} - dkms - Testing",
           enabled => 0,
         }
 
         yumrepo { 'zfs-testing-kmod':
           baseurl => "${baseurl}/epel-testing/${release}/kmod/\$basearch/",
-          descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - kmod - Testing",
+          descr   => "ZFS on Linux for EL${facts['os']['release']['major']} - kmod - Testing",
           enabled => 0,
         }
 
         yumrepo { 'zfs-testing-source':
           baseurl => "${baseurl}/epel-testing/${release}/SRPMS/",
-          descr   => "ZFS on Linux for EL${::operatingsystemmajrelease} - Testing Source",
+          descr   => "ZFS on Linux for EL${facts['os']['release']['major']} - Testing Source",
           enabled => 0,
         }
       }
@@ -75,15 +79,15 @@ class zfs::install {
 
   # Handle these dependencies separately as they shouldn't be guarded by
   # `$zfs::manage_repo`
-  case $::osfamily {
+  case $facts['os']['family'] {
     'RedHat': {
-      case $::zfs::kmod_type {
+      case $zfs::kmod_type {
         'dkms': {
           # Puppet doesn't like managing multiple versions of the same package.
           # By using the version in the name Yum will do the right thing
-          ensure_packages(["kernel-devel-${::kernelrelease}"], {
+          ensure_packages(["kernel-devel-${facts['kernelrelease']}"], {
             ensure => present,
-            before => Package[$::zfs::package_name],
+            before => Package[$zfs::package_name],
           })
         }
         default: {
@@ -92,13 +96,13 @@ class zfs::install {
       }
     }
     'Debian': {
-      case $::operatingsystem {
+      case $facts['os']['name'] {
         'Ubuntu': {
           # noop
         }
         default: {
-          ensure_packages(["linux-headers-${::kernelrelease}", "linux-headers-${::architecture}"], {
-            before => Package[$::zfs::package_name],
+          ensure_packages(["linux-headers-${facts['kernelrelease']}", "linux-headers-${facts['os']['architecture']}"], {
+            before => Package[$zfs::package_name],
           })
         }
       }
@@ -113,15 +117,15 @@ class zfs::install {
   # ZFS pools, so put it back again. It needs to be done here rather than
   # config.pp so they're present before the package is installed on Debian due
   # to their questionable behaviour of starting services immediately
-  case $::service_provider {
+  case $facts['service_provider'] {
     'systemd': {
       exec { 'zfs systemctl daemon-reload':
         command     => 'systemctl daemon-reload',
         refreshonly => true,
-        path        => $::path,
+        path        => $facts['path'],
       }
 
-      Exec['zfs systemctl daemon-reload'] -> Package[$::zfs::package_name]
+      Exec['zfs systemctl daemon-reload'] -> Package[$zfs::package_name]
 
       # The last one is for Debian 10 only
       ['zfs-import-cache', 'zfs-import-scan', 'zfs-mount'].each |$service| {
@@ -153,20 +157,20 @@ class zfs::install {
   # These need to be done here so the kernel settings are present before the
   # package is installed and potentially loading the kernel module
   $config = delete_undef_values({
-    'zfs_arc_max' => $::zfs::zfs_arc_max,
-    'zfs_arc_min' => $::zfs::zfs_arc_min,
+    'zfs_arc_max' => $zfs::zfs_arc_max,
+    'zfs_arc_min' => $zfs::zfs_arc_min,
   })
 
   $config.each |$option,$value| {
-    ::kmod::option { "zfs ${option}":
+    kmod::option { "zfs ${option}":
       module => 'zfs',
       option => $option,
       value  => $value,
-      before => Package[$::zfs::package_name],
+      before => Package[$zfs::package_name],
     }
   }
 
-  package { $::zfs::package_name:
+  package { $zfs::package_name:
     ensure => present,
   }
 }

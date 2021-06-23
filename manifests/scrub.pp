@@ -1,9 +1,9 @@
 # Set up a zpool scrub cron entry.
 #
 # @example Scrub a zpool once a month
-#   include ::zfs
+#   include zfs
 #
-#   ::zfs::scrub { 'test':
+#   zfs::scrub { 'test':
 #     hour     => '1',
 #     minute   => '0',
 #     month    => '*',
@@ -19,7 +19,7 @@
 # @param weekday See the `cron` resource type.
 # @param user See the `cron` resource type.
 #
-# @see puppet_classes::zfs ::zfs
+# @see puppet_classes::zfs zfs
 #
 # @since 2.2.0
 define zfs::scrub (
@@ -32,13 +32,11 @@ define zfs::scrub (
   String $user     = 'root',
 ) {
 
-  if ! defined(Class['::zfs']) {
-    fail('You must include the zfs base class before using any zfs defined resources')
-  }
+  include zfs
 
   cron { "zpool scrub ${zpool}":
     command     => "zpool scrub ${zpool}",
-    environment => "PATH=${::path}",
+    environment => "PATH=${facts['path']}",
     hour        => $hour,
     minute      => $minute,
     month       => $month,

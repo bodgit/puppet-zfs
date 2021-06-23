@@ -45,13 +45,13 @@ backports using
 [puppetlabs/apt](https://forge.puppet.com/puppetlabs/apt) with something like:
 
 ```puppet
-::apt::setting { 'conf-validity':
+apt::setting { 'conf-validity':
   content => @(EOS/L),
     Acquire::Check-Valid-Until "false";
     | EOS
 }
 
-class { '::apt::backports':
+class { 'apt::backports':
   location => 'http://archive.debian.org/debian',
   pin      => 500,
 }
@@ -60,7 +60,7 @@ class { '::apt::backports':
 Debian 9 and higher require the contrib repository which can be enabled with:
 
 ```puppet
-::apt::source { 'contrib':
+apt::source { 'contrib':
   location => 'http://deb.debian.org/debian',
   repos    => 'contrib',
 }
@@ -71,7 +71,7 @@ Debian 9 and higher require the contrib repository which can be enabled with:
 In the very simplest case, you can just include the following:
 
 ```puppet
-include ::zfs
+include zfs
 ```
 
 ## Usage
@@ -80,7 +80,7 @@ For example on RHEL/CentOS to instead install the kABI-tracking kernel modules
 and tune the ARC, you can do:
 
 ```puppet
-class { '::zfs':
+class { 'zfs':
   kmod_type   => 'kabi',
   zfs_arc_max => to_bytes('256 M'),
   zfs_arc_min => to_bytes('128 M'),
@@ -90,8 +90,8 @@ class { '::zfs':
 To also install the ZFS Event Daemon (zed):
 
 ```puppet
-include ::zfs
-include ::zfs::zed
+include zfs
+include zfs::zed
 ```
 
 ## Reference

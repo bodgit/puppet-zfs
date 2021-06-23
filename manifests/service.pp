@@ -1,15 +1,15 @@
 # @!visibility private
 class zfs::service {
 
-  if $::zfs::service_manage {
-    case $::service_provider {
+  if $zfs::service_manage {
+    case $facts['service_provider'] {
       'systemd': {
-        $cache_ensure = str2bool($::zfs_zpool_cache_present) ? {
+        $cache_ensure = str2bool($facts['zfs_zpool_cache_present']) ? {
           true    => 'running',
           default => 'stopped',
         }
 
-        $scan_ensure = str2bool($::zfs_zpool_cache_present) ? {
+        $scan_ensure = str2bool($facts['zfs_zpool_cache_present']) ? {
           true    => 'stopped',
           default => 'running',
         }
@@ -37,11 +37,11 @@ class zfs::service {
         # `service foo status` indicates it's running so Puppet will think the
         # services are all running and therefore never try to start them
         exec { 'modprobe zfs':
-          path   => $::path,
+          path   => $facts['path'],
           unless => 'grep -q "^zfs " /proc/modules',
         }
 
-        case $::osfamily {
+        case $facts['os']['family'] {
           'RedHat': {
             service { 'zfs-import':
               ensure     => running,
@@ -53,7 +53,7 @@ class zfs::service {
             }
           }
           'Debian': {
-            $import_ensure = str2bool($::zfs_zpool_cache_present) ? {
+            $import_ensure = str2bool($facts['zfs_zpool_cache_present']) ? {
               true    => 'running',
               default => 'stopped',
             }
@@ -73,22 +73,19 @@ class zfs::service {
       }
     }
 
-    # Not Ubuntu 12.04 or 14.04, essentially
-    if $::service_provider == 'systemd' or $::osfamily == 'RedHat' {
-      service { 'zfs-mount':
-        ensure     => running,
-        enable     => true,
-        hasstatus  => true,
-        hasrestart => true,
-        before     => Service['zfs-share'],
-      }
+    service { 'zfs-mount':
+      ensure     => running,
+      enable     => true,
+      hasstatus  => true,
+      hasrestart => true,
+      before     => Service['zfs-share'],
+    }
 
-      service { 'zfs-share':
-        ensure     => running,
-        enable     => true,
-        hasstatus  => true,
-        hasrestart => true,
-      }
+    service { 'zfs-share':
+      ensure     => running,
+      enable     => true,
+      hasstatus  => true,
+      hasrestart => true,
     }
   }
 }

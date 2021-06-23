@@ -1,10 +1,10 @@
 # Installs basic ZFS kernel and userland support.
 #
 # @example Declaring the class
-#   include ::zfs
+#   include zfs
 #
 # @example Tuning the ZFS ARC
-#   class { '::zfs':
+#   class { 'zfs':
 #     zfs_arc_max => to_bytes('256 M'),
 #     zfs_arc_min => to_bytes('128 M'),
 #   }
@@ -19,21 +19,21 @@
 # @param zfs_arc_max Maximum size of the ARC in bytes.
 # @param zfs_arc_min Minimum size of the ARC in bytes.
 #
-# @see puppet_classes::zfs::zed ::zfs::zed
-# @see puppet_defined_types::zfs::scrub ::zfs::scrub
+# @see puppet_classes::zfs::zed zfs::zed
+# @see puppet_defined_types::zfs::scrub zfs::scrub
 class zfs (
-  Stdlib::Absolutepath              $conf_dir            = $::zfs::params::conf_dir,
-  Enum['dkms', 'kabi']              $kmod_type           = $::zfs::params::kmod_type,
-  Boolean                           $manage_repo         = $::zfs::params::manage_repo,
-  Variant[String, Array[String, 1]] $package_name        = $::zfs::params::zfs_package_name,
-  Boolean                           $service_manage      = $::zfs::params::service_manage,
+  Stdlib::Absolutepath              $conf_dir            = $zfs::params::conf_dir,
+  Enum['dkms', 'kabi']              $kmod_type           = $zfs::params::kmod_type,
+  Boolean                           $manage_repo         = $zfs::params::manage_repo,
+  Variant[String, Array[String, 1]] $package_name        = $zfs::params::zfs_package_name,
+  Boolean                           $service_manage      = $zfs::params::service_manage,
   Optional[Integer[0]]              $zfs_arc_max         = undef,
   Optional[Integer[0]]              $zfs_arc_min         = undef,
-) inherits ::zfs::params {
+) inherits zfs::params {
 
-  contain ::zfs::install
-  contain ::zfs::config
-  contain ::zfs::service
+  contain zfs::install
+  contain zfs::config
+  contain zfs::service
 
-  Class['::zfs::install'] ~> Class['::zfs::config'] ~> Class['::zfs::service']
+  Class['zfs::install'] ~> Class['zfs::config'] ~> Class['zfs::service']
 }

@@ -1,0 +1,3 @@
+---
+augeasversion: '1.12.0'
+zfs_zpool_cache_present: false

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.configure do |c|
   c.mock_with :rspec
 end
@@ -5,55 +7,57 @@ end
 require 'puppetlabs_spec_helper/module_spec_helper'
 require 'rspec-puppet-facts'
 
-unless RUBY_VERSION =~ /^1\.8/
-  require 'simplecov'
-  require 'coveralls'
-end
+require 'spec_helper_local' if File.file?(File.join(File.dirname(__FILE__), 'spec_helper_local.rb'))
 
 include RspecPuppetFacts
 
-add_custom_fact :service_provider, lambda { |os, facts|
-  case facts[:osfamily]
-  when 'RedHat'
-    case facts[:operatingsystemmajrelease]
-    when '6'
-      'init'
-    else
-      'systemd'
-    end
-  when 'Debian'
-    case facts[:operatingsystem]
-    when 'Ubuntu'
-      case facts[:operatingsystemrelease]
-      when '12.04', '14.04'
-        'init'
-      else
-        'systemd'
-      end
-    else
-      'systemd'
-    end
-  end
+default_facts = {
+  puppetversion: Puppet.version,
+  facterversion: Facter.version,
 }
 
-RSpec.configure do |c|
-  c.formatter = :documentation
-  c.default_facts = { :augeasversion => '0.10.0' }
-end
+default_fact_files = [
+  File.expand_path(File.join(File.dirname(__FILE__), 'default_facts.yml')),
+  File.expand_path(File.join(File.dirname(__FILE__), 'default_module_facts.yml')),
+]
 
-dir = Pathname.new(__FILE__).parent
+default_fact_files.each do |f|
+  next unless File.exist?(f) && File.readable?(f) && File.size?(f)
 
-Puppet[:modulepath] = File.join(dir, 'fixtures', 'modules')
-Puppet[:libdir] = File.join(Puppet[:modulepath], 'stdlib', 'lib')
-
-at_exit { RSpec::Puppet::Coverage.report! }
-
-unless RUBY_VERSION =~ /^1\.8/
-  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
-    SimpleCov::Formatter::HTMLFormatter,
-    Coveralls::SimpleCov::Formatter
-  ]
-  SimpleCov.start do
-    add_filter 'spec/'
+  begin
+    default_facts.merge!(YAML.safe_load(File.read(f), [], [], true))
+  rescue => e
+    RSpec.configuration.reporter.message "WARNING: Unable to load #{f}: #{e}"
   end
 end
+
+# read default_facts and merge them over what is provided by facterdb
+default_facts.each do |fact, value|
+  add_custom_fact fact, value
+end
+
+RSpec.configure do |c|
+  c.default_facts = default_facts
+  c.before :each do
+    # set to strictest setting for testing
+    # by default Puppet runs at warning level
+    Puppet.settings[:strict] = :warning
+    Puppet.settings[:strict_variables] = true
+  end
+  c.filter_run_excluding(bolt: true) unless ENV['GEM_BOLT']
+  c.after(:suite) do
+    RSpec::Puppet::Coverage.report!(100)
+  end
+end
+
+# Ensures that a module is defined
+# @param module_name Name of the module
+def ensure_module_defined(module_name)
+  module_name.split('::').reduce(Object) do |last_module, next_module|
+    last_module.const_set(next_module, Module.new) unless last_module.const_defined?(next_module, false)
+    last_module.const_get(next_module, false)
+  end
+end
+
+# 'spec_overrides' from sync.yml will appear below this line
+add_custom_fact :service_provider, ->(os, _facts) { %r{-6-}.match?(os) ? 'init' : 'systemd' }
