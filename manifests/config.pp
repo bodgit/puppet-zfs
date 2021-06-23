@@ -1,7 +1,7 @@
 # @!visibility private
 class zfs::config {
 
-  file { $::zfs::conf_dir:
+  file { $zfs::conf_dir:
     ensure => directory,
     owner  => 0,
     group  => 0,

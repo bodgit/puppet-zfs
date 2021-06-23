@@ -34,68 +34,68 @@ describe 'zfs' do
     pp = <<-EOS
       case $::osfamily {
         'Debian': {
-          include ::apt
+          include apt
 
-          ::apt::setting { 'conf-recommends':
+          apt::setting { 'conf-recommends':
             content => @(EOS/L),
               APT::Install-Recommends "false";
               APT::Install-Suggests "false";
               | EOS
           }
 
-          ::apt::setting { 'conf-validity':
+          apt::setting { 'conf-validity':
             content => @(EOS/L),
               Acquire::Check-Valid-Until "false";
               | EOS
           }
 
-          case $::operatingsystem {
+          case $facts['os']['name'] {
             'Debian': {
-              $snapshot = $::kernelrelease ? {
+              $snapshot = $facts['kernelrelease'] ? {
                 /^4\.9\.0-9-/  => '20190601T035633Z',
                 /^4\.19\.0-5-/ => '20190701T031013Z',
                 default        => undef,
               }
 
               if $snapshot {
-                ::apt::source { 'snapshot':
+                apt::source { 'snapshot':
                   location => "https://snapshot.debian.org/archive/debian/${snapshot}",
                   repos    => 'main',
-                  before   => Class['::zfs'],
+                  before   => Class['zfs'],
                 }
 
-                ::apt::source { 'updates':
+                apt::source { 'updates':
                   location => "https://snapshot.debian.org/archive/debian/${snapshot}",
                   release  => "${::lsbdistcodename}-updates",
                   repos    => 'main',
-                  before   => Class['::zfs'],
+                  before   => Class['zfs'],
                 }
 
-                ::apt::source { 'security':
+                apt::source { 'security':
                   location => "https://snapshot.debian.org/archive/debian-security/${snapshot}",
                   release  => "${::lsbdistcodename}/updates",
                   repos    => 'main',
-                  before   => Class['::zfs'],
+                  before   => Class['zfs'],
                 }
               }
 
-              ::apt::source { 'contrib':
+              apt::source { 'contrib':
                 location => 'http://deb.debian.org/debian',
                 repos    => 'contrib',
-                before   => Class['::zfs'],
+                before   => Class['zfs'],
               }
             }
             default: {
-              Class['::apt'] -> Class['::zfs']
+              Class['apt'] -> Class['zfs']
             }
           }
         }
         'RedHat': {
-          include ::epel
+          include epel
 
-          case $::operatingsystem {
+          case $facts['os']['name'] {
             'CentOS': {
-              case $::operatingsystemmajrelease {
+              case $facts['os']['release']['major'] {
                 '7': {
                   yumrepo { 'C7.6.1810-base':
                     baseurl  => 'http://vault.centos.org/7.6.1810/os/$basearch/',
@@ -103,7 +103,7 @@ describe 'zfs' do
                     enabled  => 1,
                     gpgcheck => 1,
                     gpgkey   => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7',
-                    before   => Class['::zfs'],
+                    before   => Class['zfs'],
                   }
 
                   yumrepo { 'C7.6.1810-updates':
@@ -112,7 +112,7 @@ describe 'zfs' do
                     enabled  => 1,
                     gpgcheck => 1,
                     gpgkey   => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7',
-                    before   => Class['::zfs'],
+                    before   => Class['zfs'],
                   }
                 }
                 '8': {
@@ -123,23 +123,23 @@ describe 'zfs' do
                     enabled  => 1,
                     gpgcheck => 1,
                     gpgkey   => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial',
-                    before   => Class['::zfs'],
+                    before   => Class['zfs'],
                   }
                 }
               }
             }
           }
 
-          Class['::epel'] -> Class['::zfs']
+          Class['epel'] -> Class['zfs']
         }
       }
 
-      class { '::zfs':
+      class { 'zfs':
         zfs_arc_min => 134217728,
         zfs_arc_max => 268435456,
       }
 
-      class { '::zfs::zed':
+      class { 'zfs::zed':
         #email_addrs    => ['root'],
         #email_prog     => 'mail',
         #email_opts     => '',

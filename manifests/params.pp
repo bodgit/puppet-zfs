@@ -6,7 +6,7 @@ class zfs::params {
   $service_manage = true
   $zed_conf_dir   = "${conf_dir}/zed.d"
 
-  case $::osfamily {
+  case $facts['os']['family'] {
     'RedHat': {
       $manage_repo      = true
       $zed_package_name = undef
@@ -30,11 +30,11 @@ class zfs::params {
       $manage_repo      = false
       $zed_package_name = 'zfs-zed'
 
-      case $::operatingsystem {
+      case $facts['os']['name'] {
         'Ubuntu': {
           $zfs_package_name = 'zfsutils-linux'
 
-          case $::operatingsystemrelease {
+          case $facts['os']['release']['full'] {
             '16.04': {
               $zed_service_name = 'zed'
               $zedlet_dir       = '/usr/lib/zfs-linux/zfs/zed.d'
@@ -89,7 +89,7 @@ class zfs::params {
             'zfsutils-linux',
           ]
 
-          case $::operatingsystemmajrelease {
+          case $facts['os']['release']['major'] {
             '9': {
               $zedlet_dir = '/usr/lib/x86_64-linux-gnu/zfs/zed.d'
               $zedlets    = {
@@ -126,7 +126,7 @@ class zfs::params {
       }
     }
     default: {
-      fail("The ${module_name} module is not supported on an ${::osfamily} based system.")
+      fail("The ${module_name} module is not supported on an ${facts['os']['family']} based system.")
     }
   }
 }
