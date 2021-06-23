@@ -24,7 +24,7 @@ Tested with Travis CI
 This module currently ensures that the ZFS packages available from
 [zfsonlinux.org](http://zfsonlinux.org) are installed and configured.
 
-RHEL/CentOS, Ubuntu and Debian are supported using Puppet 4.4.0 or later. On
+RHEL/CentOS, Ubuntu and Debian are supported using Puppet 5 or later. On
 RHEL/CentOS platforms there is support for installing the kABI-tracking kernel
 modules as opposed to the default of DKMS-style kernel modules.
 
@@ -103,7 +103,7 @@ version of the documentation is hosted at
 
 ## Limitations
 
-This module has been built on and tested against Puppet 4.4.0 and higher.
+This module has been built on and tested against Puppet 5 and higher.
 
 The module has been tested on:
 
