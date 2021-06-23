@@ -43,10 +43,7 @@ end
 group :system_tests do
   gem "puppet-module-posix-system-r#{minor_version}", '~> 1.0', require: false, platforms: [:ruby]
   gem "puppet-module-win-system-r#{minor_version}", '~> 1.0',   require: false, platforms: [:mswin, :mingw, :x64_mingw]
-  gem "beaker-vagrant",                                         require: false
-  gem "beaker-rspec",                                           require: false
-  gem "beaker-puppet_install_helper",                           require: false
-  gem "beaker-module_install_helper",                           require: false
+  gem "puppet_litmus",                                          require: false if Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new('2.5.0')
 end
 
 puppet_version = ENV['PUPPET_GEM_VERSION']
