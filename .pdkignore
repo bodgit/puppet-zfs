@@ -43,3 +43,5 @@
 /.vscode/
 /.sync.yml
 /.devcontainer/
+/provision.yaml
+/spec/fixtures/litmus_inventory.yaml

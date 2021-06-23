@@ -112,45 +112,36 @@ class zfs::install {
     }
   }
 
-  # For some unbeknownst reason, the latest ZFS systemd units do not modprobe
-  # the zfs module anymore which breaks installs on machines with no existing
-  # ZFS pools, so put it back again. It needs to be done here rather than
-  # config.pp so they're present before the package is installed on Debian due
-  # to their questionable behaviour of starting services immediately
-  case $facts['service_provider'] {
-    'systemd': {
-      exec { 'zfs systemctl daemon-reload':
-        command     => 'systemctl daemon-reload',
-        refreshonly => true,
-        path        => $facts['path'],
-      }
-
-      Exec['zfs systemctl daemon-reload'] -> Package[$zfs::package_name]
-
-      # The last one is for Debian 10 only
-      ['zfs-import-cache', 'zfs-import-scan', 'zfs-mount'].each |$service| {
-        file { "/etc/systemd/system/${service}.service.d":
-          ensure => directory,
-          owner  => 0,
-          group  => 0,
-          mode   => '0644',
-        }
-
-        file { "/etc/systemd/system/${service}.service.d/override.conf":
-          ensure  => file,
-          owner   => 0,
-          group   => 0,
-          mode    => '0644',
-          content => @(EOS/L),
-            [Service]
-            ExecStartPre=-/sbin/modprobe zfs
-            | EOS
-          notify  => Exec['zfs systemctl daemon-reload'],
-        }
-      }
+  # This is to work around the broken Debian 9 packages. Upon install the
+  # zfs-mount.service is started first which is the only unit that doesn't
+  # have an "ExecStartPre=-/sbin/modprobe zfs" line so the package can never
+  # be installed!
+  if $facts['os']['name'] == 'Debian' and $facts['os']['release']['major'] == '9' {
+    exec { 'zfs systemctl daemon-reload':
+      command     => 'systemctl daemon-reload',
+      refreshonly => true,
+      path        => $facts['path'],
     }
-    default: {
-      # noop
+
+    Exec['zfs systemctl daemon-reload'] -> Package[$zfs::package_name]
+
+    file { '/etc/systemd/system/zfs-mount.service.d':
+      ensure => directory,
+      owner  => 0,
+      group  => 0,
+      mode   => '0644',
+    }
+
+    file { '/etc/systemd/system/zfs-mount.service.d/override.conf':
+      ensure  => file,
+      owner   => 0,
+      group   => 0,
+      mode    => '0644',
+      content => @(EOS/L),
+        [Service]
+        ExecStartPre=-/sbin/modprobe zfs
+        | EOS
+      notify  => Exec['zfs systemctl daemon-reload'],
     }
   }
 

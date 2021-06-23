@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Facter.add('zfs_zpool_cache_present') do
   confine kernel: 'Linux'
   setcode do
