@@ -1,11 +1,10 @@
 # zfs
 
-Tested with Travis CI
-
-[![Build Status](https://travis-ci.org/bodgit/puppet-zfs.svg?branch=master)](https://travis-ci.org/bodgit/puppet-zfs)
-[![Coverage Status](https://coveralls.io/repos/bodgit/puppet-zfs/badge.svg?branch=master&service=github)](https://coveralls.io/github/bodgit/puppet-zfs?branch=master)
-[![Puppet Forge](http://img.shields.io/puppetforge/v/bodgit/zfs.svg)](https://forge.puppetlabs.com/bodgit/zfs)
-[![Puppet Forge](https://img.shields.io/puppetforge/dt/bodgit/zfs)](https://forge.puppetlabs.com/bodgit/zfs)
+[![Build Status](https://img.shields.io/github/workflow/status/bodgit/puppet-zfs/Test)](https://github.com/bodgit/puppet-zfs/actions?query=workflow%3ATest)
+[![Codecov](https://img.shields.io/codecov/c/github/bodgit/puppet-zfs)](https://codecov.io/gh/bodgit/puppet-zfs)
+[![Puppet Forge version](http://img.shields.io/puppetforge/v/bodgit/zfs)](https://forge.puppetlabs.com/bodgit/zfs)
+[![Puppet Forge downloads](https://img.shields.io/puppetforge/dt/bodgit/zfs)](https://forge.puppetlabs.com/bodgit/zfs)
+[![Puppet Forge - PDK version](https://img.shields.io/puppetforge/pdk-version/bodgit/zfs)](https://forge.puppetlabs.com/bodgit/zfs)
 
 #### Table of Contents
 
@@ -39,30 +38,16 @@ accomplish this. This means kernel headers, toolchains, etc. will be installed.
 
 You will need pluginsync enabled. On RHEL/CentOS platforms you will need to
 have access to the EPEL repository by using
-[stahnma/epel](https://forge.puppet.com/stahnma/epel) or by other means to
-use the DKMS-style kernel modules. On Debian 8 you will need to enable
+[puppet/epel](https://forge.puppet.com/puppet/epel) or by other means to
+use the DKMS-style kernel modules. On Debian you will need to enable
 backports using
 [puppetlabs/apt](https://forge.puppet.com/puppetlabs/apt) with something like:
 
 ```puppet
-apt::setting { 'conf-validity':
-  content => @(EOS/L),
-    Acquire::Check-Valid-Until "false";
-    | EOS
-}
-
 class { 'apt::backports':
-  location => 'http://archive.debian.org/debian',
-  pin      => 500,
-}
-```
-
-Debian 9 and higher require the contrib repository which can be enabled with:
-
-```puppet
-apt::source { 'contrib':
-  location => 'http://deb.debian.org/debian',
-  repos    => 'contrib',
+  repos  => 'main contrib',
+  pin    => 990,
+  before => Class['zfs'],
 }
 ```
 
@@ -99,7 +84,8 @@ include zfs::zed
 The reference documentation is generated with
 [puppet-strings](https://github.com/puppetlabs/puppet-strings) and the latest
 version of the documentation is hosted at
-[https://bodgit.github.io/puppet-zfs/](https://bodgit.github.io/puppet-zfs/).
+[https://bodgit.github.io/puppet-zfs/](https://bodgit.github.io/puppet-zfs/)
+and available also in the [REFERENCE.md](https://github.com/bodgit/puppet-zfs/blob/main/REFERENCE.md).
 
 ## Limitations
 
@@ -107,22 +93,20 @@ This module has been built on and tested against Puppet 5 and higher.
 
 The module has been tested on:
 
-* RedHat Enterprise Linux 6/7/8
-* Ubuntu 16.04, 18.04
-* Debian 8/9/10
-
-It should also work on Ubuntu 12.04/14.04 however the quality of some aspects
-of the packages make it difficult for the module to work properly.
+* Red Hat/CentOS Enterprise Linux 6/7/8
+* Ubuntu 16.04/18.04/20.04
+* Debian 9/10
 
 ## Development
 
-The module has both [rspec-puppet](http://rspec-puppet.com) and
-[beaker-rspec](https://github.com/puppetlabs/beaker-rspec) tests. Run them
+The module relies on [PDK](https://puppet.com/docs/pdk/1.x/pdk.html) and has
+both [rspec-puppet](http://rspec-puppet.com) and
+[Litmus](https://github.com/puppetlabs/puppet_litmus) tests. Run them
 with:
 
 ```
-$ bundle exec rake test
-$ PUPPET_INSTALL_TYPE=agent PUPPET_INSTALL_VERSION=x.y.z bundle exec rake beaker:<nodeset>
+$ bundle exec rake spec
+$ bundle exec rake litmus:*
 ```
 
 Please log issues or pull requests at
