@@ -6,15 +6,15 @@
 <title>
   Puppet Class: zfs
   
-    &mdash; Documentation by YARD 0.9.9
+    &mdash; Documentation by YARD 0.9.26
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "puppet_classes::zfs";
   relpath = '../';
 </script>
@@ -62,11 +62,6 @@
       <div id="content"><h1>Puppet Class: zfs</h1>
 <div class="box_info">
   
-  <dl>
-    <dt>Inherits:</dt>
-    <dd>::zfs::params</dd>
-  </dl>
-  
   
   <dl>
     <dt>Defined in:</dt>
@@ -84,6 +79,8 @@
 
   </div>
 </div>
+
+
 <div class="tags">
   
   <div class="examples">
@@ -94,14 +91,14 @@
 <p>Declaring the class</p>
 </div></p>
       
-      <pre class="example code"><code>include ::zfs</code></pre>
+      <pre class="example code"><code><span class='id identifier rubyid_include'>include</span> <span class='id identifier rubyid_zfs'>zfs</span></code></pre>
     
       
         <p class="example_title"><div class='inline'>
 <p>Tuning the ZFS ARC</p>
 </div></p>
       
-      <pre class="example code"><code>class { &#39;::zfs&#39;:
+      <pre class="example code"><code>class { &#39;zfs&#39;:
   zfs_arc_max =&gt; to_bytes(&#39;256 M&#39;),
   zfs_arc_min =&gt; to_bytes(&#39;128 M&#39;),
 }</code></pre>
@@ -117,8 +114,6 @@
       
         <span class='type'>(<tt>Stdlib::Absolutepath</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>$::zfs::params::conf_dir</tt>)</em>
       
       
         &mdash;
@@ -136,13 +131,10 @@
         <span class='type'>(<tt>Enum['dkms', 'kabi']</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>$::zfs::params::kmod_type</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
-<p>Whether to use DKMS kernel packages or ones built to match the running
-kernel (only applies to RHEL platforms).</p>
+<p>Whether to use DKMS kernel packages or ones built to match the running kernel (only applies to RHEL platforms).</p>
 </div>
       
     </li>
@@ -154,8 +146,6 @@ kernel (only applies to RHEL platforms).</p>
       
         <span class='type'>(<tt>Boolean</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>$::zfs::params::manage_repo</tt>)</em>
       
       
         &mdash;
@@ -173,8 +163,6 @@ kernel (only applies to RHEL platforms).</p>
         <span class='type'>(<tt>Variant[String, Array[String, 1]]</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>$::zfs::params::zfs_package_name</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -190,8 +178,6 @@ kernel (only applies to RHEL platforms).</p>
       
         <span class='type'>(<tt>Boolean</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>$::zfs::params::service_manage</tt>)</em>
       
       
         &mdash;
@@ -209,8 +195,6 @@ kernel (only applies to RHEL platforms).</p>
         <span class='type'>(<tt>Optional[Integer[0]]</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -227,8 +211,6 @@ kernel (only applies to RHEL platforms).</p>
         <span class='type'>(<tt>Optional[Integer[0]]</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -240,12 +222,13 @@ kernel (only applies to RHEL platforms).</p>
 </ul>
 
 
+
   <p class="tag_title">See Also:</p>
   <ul class="see">
     
-      <li><span class='object_link'><a href="zfs_3A_3Azed.html" title="puppet_classes::zfs::zed (puppet_class)">::zfs::zed</a></span></li>
+      <li><span class='object_link'><a href="zfs_3A_3Azed.html" title="puppet_classes::zfs::zed (puppet_class)">zfs::zed</a></span></li>
     
-      <li><span class='object_link'><a href="../puppet_defined_types/zfs_3A_3Ascrub.html" title="puppet_defined_types::zfs::scrub (puppet_defined_type)">::zfs::scrub</a></span></li>
+      <li><span class='object_link'><a href="../puppet_defined_types/zfs_3A_3Ascrub.html" title="puppet_defined_types::zfs::scrub (puppet_defined_type)">zfs::scrub</a></span></li>
     
   </ul>
 
@@ -277,20 +260,20 @@ kernel (only applies to RHEL platforms).</p>
         <pre class="code"><span class="info file"># File 'manifests/init.pp', line 24</span>
 
 class zfs (
-  Stdlib::Absolutepath              $conf_dir       = $::zfs::params::conf_dir,
-  Enum[&#39;dkms&#39;, &#39;kabi&#39;]              $kmod_type      = $::zfs::params::kmod_type,
-  Boolean                           $manage_repo    = $::zfs::params::manage_repo,
-  Variant[String, Array[String, 1]] $package_name   = $::zfs::params::zfs_package_name,
-  Boolean                           $service_manage = $::zfs::params::service_manage,
-  Optional[Integer[0]]              $zfs_arc_max    = undef,
-  Optional[Integer[0]]              $zfs_arc_min    = undef,
-) inherits ::zfs::params {
+  Stdlib::Absolutepath              $conf_dir,
+  Enum[&#39;dkms&#39;, &#39;kabi&#39;]              $kmod_type,
+  Boolean                           $manage_repo,
+  Variant[String, Array[String, 1]] $package_name,
+  Boolean                           $service_manage,
+  Optional[Integer[0]]              $zfs_arc_max,
+  Optional[Integer[0]]              $zfs_arc_min,
+) {
 
-  contain ::zfs::install
-  contain ::zfs::config
-  contain ::zfs::service
+  contain zfs::install
+  contain zfs::config
+  contain zfs::service
 
-  Class[&#39;::zfs::install&#39;] ~&gt; Class[&#39;::zfs::config&#39;] ~&gt; Class[&#39;::zfs::service&#39;]
+  Class[&#39;zfs::install&#39;] ~&gt; Class[&#39;zfs::config&#39;] ~&gt; Class[&#39;zfs::service&#39;]
 }</pre>
       </td>
     </tr>
@@ -299,9 +282,7 @@ class zfs (
 </div>
 
       <div id="footer">
-  Generated on Sat Feb 24 19:35:50 2018 by
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.2.5).
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
 </div>
 
     </div>

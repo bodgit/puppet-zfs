@@ -6,15 +6,15 @@
 <title>
   File: README
   
-    &mdash; Documentation by YARD 0.9.9
+    &mdash; Documentation by YARD 0.9.26
   
 </title>
 
-  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "";
   relpath = '';
 </script>
@@ -60,16 +60,7 @@
       <div id="content"><div id='filecontents'>
 <h1 id="label-zfs">zfs</h1>
 
-<p>Tested with Travis CI</p>
-
-<p><a href="https://travis-ci.org/bodgit/puppet-zfs"><img
-src="https://travis-ci.org/bodgit/puppet-zfs.svg?branch=master"></a> <a
-href="https://coveralls.io/github/bodgit/puppet-zfs?branch=master"><img
-src="https://coveralls.io/repos/bodgit/puppet-zfs/badge.svg?branch=master&service=github"></a>
-<a href="https://forge.puppetlabs.com/bodgit/zfs"><img
-src="http://img.shields.io/puppetforge/v/bodgit/zfs.svg"></a> <a
-href="https://gemnasium.com/bodgit/puppet-zfs"><img
-src="https://gemnasium.com/bodgit/puppet-zfs.svg"></a></p>
+<p><a href="https://github.com/bodgit/puppet-zfs/actions?query=workflow%3ATest"><img src="https://img.shields.io/github/workflow/status/bodgit/puppet-zfs/Test"></a> <a href="https://codecov.io/gh/bodgit/puppet-zfs"><img src="https://img.shields.io/codecov/c/github/bodgit/puppet-zfs"></a> <a href="https://forge.puppetlabs.com/bodgit/zfs"><img src="http://img.shields.io/puppetforge/v/bodgit/zfs"></a> <a href="https://forge.puppetlabs.com/bodgit/zfs"><img src="https://img.shields.io/puppetforge/dt/bodgit/zfs"></a> <a href="https://forge.puppetlabs.com/bodgit/zfs"><img src="https://img.shields.io/puppetforge/pdk-version/bodgit/zfs"></a></p>
 
 <h4 id="label-Table+of+Contents">Table of Contents</h4>
 <ol><li>
@@ -84,122 +75,92 @@ src="https://gemnasium.com/bodgit/puppet-zfs.svg"></a></p>
 <p><a href="#beginning-with-zfs">Beginning with zfs</a></p>
 </li></ul>
 </li><li>
-<p><a href="#usage">Usage - Configuration options and additional
-functionality</a></p>
+<p><a href="#usage">Usage - Configuration options and additional functionality</a></p>
 </li><li>
-<p><a href="#reference">Reference - An under-the-hood peek at what the module
-is doing and how</a></p>
+<p><a href="#reference">Reference - An under-the-hood peek at what the module is doing and how</a></p>
 </li><li>
 <p><a href="#limitations">Limitations - OS compatibility, etc.</a></p>
 </li><li>
-<p><a href="#development">Development - Guide for contributing to the
-module</a></p>
+<p><a href="#development">Development - Guide for contributing to the module</a></p>
 </li></ol>
 
 <h2 id="label-Description">Description</h2>
 
-<p>This module currently ensures that the ZFS packages available from <a
-href="http://zfsonlinux.org">zfsonlinux.org</a> are installed and
-configured.</p>
+<p>This module currently ensures that the ZFS packages available from <a href="http://zfsonlinux.org">zfsonlinux.org</a> are installed and configured.</p>
 
-<p>RHEL/CentOS, Ubuntu and Debian are supported using Puppet 4.4.0 or later.
-On RHEL/CentOS platforms there is support for installing the kABI-tracking
-kernel modules as opposed to the default of DKMS-style kernel modules.</p>
+<p>RHEL/CentOS, Ubuntu and Debian are supported using Puppet 5 or later. On RHEL/CentOS platforms there is support for installing the kABI-tracking kernel modules as opposed to the default of DKMS-style kernel modules.</p>
 
 <h2 id="label-Setup">Setup</h2>
 
 <h3 id="label-What+zfs+affects">What zfs affects</h3>
 
-<p>This module will install kernel modules which utilises the DKMS framework
-to accomplish this. This means kernel headers, toolchains, etc. will be
-installed.</p>
+<p>This module will install kernel modules which utilises the DKMS framework to accomplish this. This means kernel headers, toolchains, etc. will be installed.</p>
 
 <h3 id="label-Setup+Requirements">Setup Requirements</h3>
 
-<p>You will need pluginsync enabled. On RHEL/CentOS platforms you will need to
-have access to the EPEL repository by using <a
-href="https://forge.puppet.com/stahnma/epel">stahnma/epel</a> or by other
-means. On Debian 8 you will need to enable backports using <a
-href="https://forge.puppet.com/puppetlabs/apt">puppetlabs/apt</a> with
-something like:</p>
+<p>You will need pluginsync enabled. On RHEL/CentOS platforms you will need to have access to the EPEL repository by using <a href="https://forge.puppet.com/puppet/epel">puppet/epel</a> or by other means to use the DKMS-style kernel modules. On Debian you will need to enable backports using <a href="https://forge.puppet.com/puppetlabs/apt">puppetlabs/apt</a> with something like:</p>
 
-<pre class="code ruby"><code class="ruby">class { &#39;::apt::backports&#39;:
-  pin =&gt; 500,
-}</code></pre>
-
-<p>Debian 9 and higher require the contrib repository which can be enabled
-with:</p>
-
-<pre class="code ruby"><code class="ruby">::apt::source { &#39;contrib&#39;:
-  location =&gt; &#39;http://deb.debian.org/debian&#39;,
-  repos    =&gt; &#39;contrib&#39;,
-}</code></pre>
+<pre class="code ruby"><code class="ruby">class { &#39;apt::backports&#39;:
+  repos  =&gt; &#39;main contrib&#39;,
+  pin    =&gt; 990,
+  before =&gt; Class[&#39;zfs&#39;],
+}
+</code></pre>
 
 <h3 id="label-Beginning+with+zfs">Beginning with zfs</h3>
 
 <p>In the very simplest case, you can just include the following:</p>
 
-<pre class="code ruby"><code class="ruby">include ::zfs</code></pre>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_include'>include</span> <span class='id identifier rubyid_zfs'>zfs</span>
+</code></pre>
 
 <h2 id="label-Usage">Usage</h2>
 
-<p>For example on RHEL/CentOS to instead install the kABI-tracking kernel
-modules and tune the ARC, you can do:</p>
+<p>For example on RHEL/CentOS to instead install the kABI-tracking kernel modules and tune the ARC, you can do:</p>
 
-<pre class="code ruby"><code class="ruby">include ::epel
-
-class { &#39;::zfs&#39;:
+<pre class="code ruby"><code class="ruby">class { &#39;zfs&#39;:
   kmod_type   =&gt; &#39;kabi&#39;,
   zfs_arc_max =&gt; to_bytes(&#39;256 M&#39;),
   zfs_arc_min =&gt; to_bytes(&#39;128 M&#39;),
-  require     =&gt; Class[&#39;::epel&#39;],
-}</code></pre>
+}
+</code></pre>
 
 <p>To also install the ZFS Event Daemon (zed):</p>
 
-<pre class="code ruby"><code class="ruby">include ::zfs
-include ::zfs::zed</code></pre>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_include'>include</span> <span class='id identifier rubyid_zfs'>zfs</span>
+<span class='id identifier rubyid_include'>include</span> <span class='id identifier rubyid_zfs'>zfs</span><span class='op'>::</span><span class='id identifier rubyid_zed'>zed</span>
+</code></pre>
 
 <h2 id="label-Reference">Reference</h2>
 
-<p>The reference documentation is generated with <a
-href="https://github.com/puppetlabs/puppet-strings">puppet-strings</a> and
-the latest version of the documentation is hosted at <a
-href="https://bodgit.github.io/puppet-zfs/">bodgit.github.io/puppet-zfs/</a>.</p>
+<p>The reference documentation is generated with <a href="https://github.com/puppetlabs/puppet-strings">puppet-strings</a> and the latest version of the documentation is hosted at <a href="https://bodgit.github.io/puppet-zfs/">bodgit.github.io/puppet-zfs/</a> and available also in the <a href="https://github.com/bodgit/puppet-zfs/blob/main/REFERENCE.md">REFERENCE.md</a>.</p>
 
 <h2 id="label-Limitations">Limitations</h2>
 
-<p>This module has been built on and tested against Puppet 4.4.0 and higher.</p>
+<p>This module has been built on and tested against Puppet 5 and higher.</p>
 
 <p>The module has been tested on:</p>
 <ul><li>
-<p>RedHat Enterprise Linux 6/7</p>
+<p>Red Hat/CentOS Enterprise Linux 6/7/8</p>
 </li><li>
-<p>Ubuntu 16.04</p>
+<p>Ubuntu 16.04/18.04/20.04</p>
 </li><li>
-<p>Debian 8, 9</p>
+<p>Debian 9/10</p>
 </li></ul>
-
-<p>It should also work on Ubuntu 12.04/14.04 however the quality of some
-aspects of the packages make it difficult for the module to work properly.</p>
 
 <h2 id="label-Development">Development</h2>
 
-<p>The module has both <a href="http://rspec-puppet.com">rspec-puppet</a> and
-<a href="https://github.com/puppetlabs/beaker-rspec">beaker-rspec</a>
-tests. Run them with:</p>
+<p>The module relies on <a href="https://puppet.com/docs/pdk/1.x/pdk.html">PDK</a> and has both <a href="http://rspec-puppet.com">rspec-puppet</a> and <a href="https://github.com/puppetlabs/puppet_litmus">Litmus</a> tests. Run them with:</p>
 
-<pre class="code ruby"><code class="ruby">$ bundle exec rake test
-$ PUPPET_INSTALL_TYPE=agent PUPPET_INSTALL_VERSION=x.y.z bundle exec rake beaker:&lt;nodeset&gt;</code></pre>
+<pre class="code ruby"><code class="ruby">$ bundle exec rake spec
+$ bundle exec rake litmus:*
+</code></pre>
 
-<p>Please log issues or pull requests at <a
-href="https://github.com/bodgit/puppet-zfs">github</a>.</p>
+<p>Please log issues or pull requests at <a href="https://github.com/bodgit/puppet-zfs">github</a>.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Sat Feb 24 19:35:50 2018 by
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.9 (ruby-2.2.5).
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
 </div>
 
     </div>
