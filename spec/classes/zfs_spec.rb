@@ -19,7 +19,6 @@ describe 'zfs' do
       it { is_expected.to contain_class('zfs') }
       it { is_expected.to contain_class('zfs::config') }
       it { is_expected.to contain_class('zfs::install') }
-      it { is_expected.to contain_class('zfs::params') }
       it { is_expected.to contain_class('zfs::service') }
       it { is_expected.to contain_exec('modprobe zfs') }
       it { is_expected.to contain_file('/etc/zfs') }
